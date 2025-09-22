@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Maestro Lee</title>
+  
+  <!-- SEO -->
+  <meta name="description" content="Restaurante Maestro Lee - Comida china hecha por manos venezolanas. Sopas, arroces, carnes, pastas y más.">
+  <meta name="keywords" content="comida china, restaurante, Maestro Lee, venezolanos, sopas, arroz, pollo, carne, cerdo, pastas">
+  <meta name="author" content="Maestro Lee">
+
+  <!-- Favicon -->
+  <link rel="icon" href="img/favicon.png" type="image/png">
+
+  <style>
+    body {
+      font-family: "Segoe UI", Arial, sans-serif;
+      margin: 0;
+      background: #fff8f0;
+      color: #333;
+    }
+    header {
+      background: linear-gradient(135deg, #b22222, #8b0000);
+      color: #ffd700;
+      padding: 30px 20px;
+      text-align: center;
+      border-bottom: 5px solid #ffd700;
+    }
+    header h1 {
+      margin: 0;
+      font-size: 3em;
+      letter-spacing: 2px;
+      font-weight: bold;
+    }
+    header p {
+      margin: 5px 0 0;
+      font-style: italic;
+      font-size: 1.2em;
+    }
+    nav {
+      background: #333;
+      padding: 12px;
+      text-align: center;
+      border-bottom: 3px solid #ffd700;
+    }
+    nav a {
+      color: #ffd700;
+      text-decoration: none;
+      margin: 0 18px;
+      font-weight: bold;
+      font-size: 1.1em;
+      transition: color 0.3s;
+    }
+    nav a:hover {
+      color: #fff;
+    }
+    section {
+      padding: 50px 20px;
+      max-width: 1000px;
+      margin: auto;
+    }
+    h2 {
+      color: #b22222;
+      border-bottom: 3px solid #ffd700;
+      display: inline-block;
+      margin-bottom: 25px;
+      padding-bottom: 5px;
+      font-size: 2em;
+    }
+    .menu-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 25px;
+    }
+    .plato {
+      background: #fff;
+      border: 2px solid #ffd700;
+      border-radius: 10px;
+      overflow: hidden;
+      text-align: center;
+      box-shadow: 0 3px 8px rgba(0,0,0,0.15);
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+    .plato:hover {
+      transform: scale(1.07);
+      box-shadow: 0 6px 18px rgba(0,0,0,0.3);
+    }
+    .plato img {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+      border-bottom: 2px solid #ffd700;
+    }
+    .plato h3 {
+      margin: 12px 0 5px;
+      color: #b22222;
+      font-size: 1.3em;
+    }
+    .plato p {
+      margin: 0 0 15px;
+      font-size: 1.2em;
+      font-weight: bold;
+      color: #333;
+    }
+    footer {
+      background: #8b0000;
+      color: #ffd700;
+      text-align: center;
+      padding: 25px;
+      border-top: 4px solid #ffd700;
+    }
+    footer a {
+      color: #fff;
+      text-decoration: none;
+    }
+
+    /* Formulario de contacto */
+    form {
+      margin-top: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    input, textarea {
+      padding: 12px;
+      border: 2px solid #ffd700;
+      border-radius: 6px;
+      font-size: 1em;
+      outline: none;
+    }
+    input:focus, textarea:focus {
+      border-color: #b22222;
+    }
+    button {
+      padding: 12px;
+      background: #b22222;
+      color: #ffd700;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: bold;
+      font-size: 1em;
+      transition: background 0.3s;
+    }
+    button:hover {
+      background: #8b0000;
+    }
+
+    /* BOTÓN DE WHATSAPP */
+    .whatsapp {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: #25D366;
+      color: white;
+      border-radius: 50%;
+      width: 65px;
+      height: 65px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 32px;
+      text-decoration: none;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+      transition: transform 0.2s;
+      z-index: 1000;
+    }
+    .whatsapp:hover {
+      transform: scale(1.15);
+      background: #20b954;
+    }
+  </style>
+</head>
+<body>
+  <!-- Encabezado -->
+  <header>
+    <h1>Maestro Lee</h1>
+    <p>Comida china hecha por manos venezolanas</p>
+  </header>
+
+  <!-- Navegación -->
+  <nav>
+    <a href="#inicio">Inicio</a>
+    <a href="#menu">Menú</a>
+    <a href="#contacto">Contacto</a>
+  </nav>
+
+  <!-- Inicio -->
+  <section id="inicio">
+    <h2>Bienvenidos</h2>
+    <p>Disfruta de auténtica comida china con un toque venezolano. Ingredientes frescos, recetas tradicionales y el mejor sabor para compartir en familia.</p>
+  </section>
+
+  <!-- Menú con imágenes -->
+  <section id="menu">
+    <h2>Menú</h2>
+    <div class="menu-grid">
+      <div class="plato">
+        <img src="img/entremeses.jpg" alt="Bandeja de entremeses chinos">
+        <h3>Entremeses</h3>
+        <p>$15</p>
+      </div>
+      <div class="plato">
+        <img src="img/sopas.jpg" alt="Sopa tradicional china">
+        <h3>Sopas</h3>
+        <p>$10</p>
+      </div>
+      <div class="plato">
+        <img src="img/arroz.jpg" alt="Arroz frito estilo chino">
+        <h3>Arroz</h3>
+        <p>$18</p>
+      </div>
+      <div class="plato">
+        <img src="img/pollo.jpg" alt="Pollo salteado con vegetales">
+        <h3>Pollo</h3>
+        <p>$20</p>
+      </div>
+      <div class="plato">
+        <img src="img/carne.jpg" alt="Carne en salsa oriental">
+        <h3>Carne</h3>
+        <p>$25</p>
+      </div>
+      <div class="plato">
+        <img src="img/cerdo.jpg" alt="Cerdo agridulce">
+        <h3>Cerdo</h3>
+        <p>$25</p>
+      </div>
+      <div class="plato">
+        <img src="img/pastas.jpg" alt="Pastas chinas tradicionales">
+        <h3>Pastas</h3>
+        <p>$16</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Contacto -->
+  <section id="contacto">
+    <h2>Contacto</h2>
+    <p>📞 Teléfono: <a href="tel:+13215664889">+1 321 566 4889</a></p>
+    <p>📷 Instagram: <a href="https://instagram.com/maes.trolee" target="_blank">@maes.trolee</a></p>
+
+    <!-- Formulario -->
+    <form action="mailto:tuemail@correo.com" method="post" enctype="text/plain">
+      <label>Nombre:</label>
+      <input type="text" name="nombre" required>
+      <label>Mensaje:</label>
+      <textarea name="mensaje" rows="4" required></textarea>
+      <button type="submit">Enviar</button>
+    </form>
+  </section>
+
+  <!-- Pie de página -->
+  <footer>
+    <p>&copy; 2025 Maestro Lee. Todos los derechos reservados.</p>
+  </footer>
+
+  <!-- BOTÓN DE WHATSAPP -->
+  <a href="https://wa.me/13215664889?text=Hola%20Maestro%20Lee%20🍜%20quiero%20hacer%20un%20pedido" class="whatsapp" target="_blank">
+    💬
+  </a>
+</body>
+</html>
