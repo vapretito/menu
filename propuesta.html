@@ -1,0 +1,408 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Propuesta – Sitio de Delivery con Carrito y WhatsApp</title>
+  <meta name="description" content="Propuesta de desarrollo de sitio de delivery con menú, carrito y envío de pedido por WhatsApp.">
+  <style>
+    :root{
+      --bg:#0a0a0f; --card:#121018; --muted:#aeb4c2; --text:#f1f4fb;
+      --brand:#ff7b7b; --brand2:#7c5cff; --ok:#37d0a7; --warn:#ffd166; --danger:#ff5c93;
+      --shadow: 0 18px 50px rgba(0,0,0,.35);
+      --radius: 18px;
+    }
+    *{box-sizing:border-box}
+    html,body{
+      margin:0;
+      background:linear-gradient(180deg,#0b0d10,#0f1217);
+      color:var(--text);
+      font-family:system-ui,-apple-system,"Segoe UI",Roboto,Inter,Helvetica,Arial,sans-serif
+    }
+    a{color:var(--brand2);text-decoration:none}
+    .wrap{max-width:1100px;margin:0 auto;padding:28px}
+    
+    header.hero{
+      position:relative;overflow:hidden;border-radius:28px;background:
+        radial-gradient(1200px 600px at -10% -20%, rgba(124,92,255,.25), transparent),
+        radial-gradient(1000px 600px at 120% 20%, rgba(255,123,123,.22), transparent),
+        linear-gradient(135deg,#171427 0%,#0e0b17 100%);
+      box-shadow:var(--shadow); padding:42px
+    }
+    .hero h1{font-size:32px;margin:0 0 8px}
+    .hero p{margin:0;color:var(--muted)}
+    .badge{
+      display:inline-block;background:rgba(76,201,240,.18);color:#c7f1ff;
+      padding:6px 12px;border-radius:999px;font-size:12px;margin-bottom:8px;
+      border:1px solid rgba(76,201,240,.35)
+    }
+    .grid{display:grid;gap:20px}
+    @media(min-width:900px){
+      .grid.cols-3{grid-template-columns:repeat(3,1fr)}
+      .grid.cols-2{grid-template-columns:1fr 1fr}
+    }
+    section{margin:28px 0}
+    .card{background:var(--card);border:1px solid rgba(255,255,255,.06);border-radius:var(--radius);padding:18px;box-shadow:var(--shadow)}
+    h2{font-size:22px;margin:0 0 10px}
+    h3{font-size:18px;margin:16px 0 8px}
+    p{color:#d9e2ef;line-height:1.6}
+    ul{margin:8px 0 0 18px;color:#d9e2ef}
+    li{margin:6px 0}
+    code, pre{background:#0e1217;border:1px solid rgba(255,255,255,.06);padding:10px;border-radius:10px;color:#d1f2ff;display:block;overflow:auto}
+    
+    .btn{
+      display:inline-flex;align-items:center;gap:10px;
+      background:linear-gradient(135deg,var(--brand2),var(--brand));
+      color:white;border:none;padding:12px 18px;border-radius:14px;
+      font-weight:800;box-shadow:var(--shadow);cursor:pointer;letter-spacing:.2px;
+      transition:transform .08s ease, filter .2s ease
+    }
+    .btn:hover{transform:translateY(-1px);filter:brightness(1.05)}
+    .btn.secondary{background:#1a2230;border:1px solid rgba(255,255,255,.08);color:#cfe6ff}
+    
+    .pill{padding:6px 10px;border:1px solid rgba(255,255,255,.08);border-radius:999px;font-size:12px;color:#cfe6ff;background:#11161e;display:inline-block}
+    .price{font-size:28px;font-weight:800}
+    .muted{color:var(--muted)}
+    .ok{color:var(--ok)} .warn{color:var(--warn)} .danger{color:var(--danger)}
+    
+    .menu-sample .item{display:flex;gap:14px;align-items:center;justify-content:space-between;padding:12px;border-radius:12px;border:1px solid rgba(255,255,255,.06);background:#11161e}
+    .menu-sample .left{display:flex;gap:12px;align-items:center}
+    .menu-sample img{width:64px;height:64px;border-radius:12px;object-fit:cover;border:1px solid rgba(255,255,255,.06)}
+    .qty{display:flex;align-items:center;gap:8px}
+    .qty button{width:28px;height:28px;border-radius:8px;border:1px solid rgba(255,255,255,.12);background:#0f141b;color:#e6f0ff}
+    .totals{display:flex;justify-content:space-between;border-top:1px dashed rgba(255,255,255,.12);margin-top:10px;padding-top:10px}
+    
+    .cols{display:grid;gap:16px}
+    @media(min-width:800px){.cols{grid-template-columns:1.2fr .8fr}}
+    
+    .wa-preview{
+      background:#0d1117;border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:12px;
+      font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      white-space:pre-wrap
+    }
+    
+    footer{margin:32px 0;color:var(--muted);text-align:center}
+    .topbar{display:flex;gap:12px;flex-wrap:wrap;margin-top:12px}
+    nav a{font-size:14px;color:#cfe6ff;border:1px solid rgba(255,255,255,.08);padding:8px 12px;border-radius:999px;background:#11161e}
+    .table{width:100%;border-collapse:collapse}
+    .table th,.table td{border-bottom:1px solid rgba(255,255,255,.08);padding:10px;text-align:left}
+    .print{position:fixed;right:24px;bottom:24px}
+    
+    /* ✅ Solo aplica en impresión */
+    @media print{
+      header.hero, .print{display:none}
+      body{background:white;color:black}
+      .card{box-shadow:none;border:1px solid #ccc}
+      a{color:#000}
+      .signature{color:#000}
+    }
+    
+    /* Accesibilidad opcional */
+    .btn:focus-visible, a:focus-visible {
+      outline: 2px dashed var(--brand); outline-offset: 2px;
+    }
+    
+      </style>
+</head>
+<body>
+  <div class="wrap">
+    <header class="hero">
+      <span class="badge">Propuesta</span>
+      <h1>Sitio de Delivery con Carrito y Envío por WhatsApp</h1>
+      <p>Cliente: <strong>Restaurante Maestro  Lee</strong> · Fecha: <strong>23/09/2025</strong></p>
+      <div class="topbar">
+        <a href="#resumen">Resumen</a>
+        <a href="#alcance">Alcance</a>
+        <a href="#flujo">Flujo</a>
+        <a href="#ejemplo">Ejemplo WhatsApp</a>
+        <a href="#tiempos">Tiempos</a>
+        <a href="#presupuesto">Presupuesto</a>
+        <a href="#extras">Extras</a>
+        <a href="#next">Próximos Pasos</a>
+      </div>
+    </header>
+
+    <section id="resumen" class="card">
+      <h2>1) Resumen ejecutivo</h2>
+      <p>Web <strong>simple, rápida y mobile‑first</strong> para que tus clientes puedan: ver el <strong>menú por categorías</strong>, armar <strong>carrito</strong>, completar <strong>datos</strong> y enviar el <strong>pedido por WhatsApp</strong> a tu número.</p>
+      <ul>
+        <li>Sin panel admin en esta fase: el menú se gestiona por <strong>JSON/Planilla</strong>.</li>
+        <li>Se prioriza velocidad, claridad y <strong>experiencia móvil</strong>.</li>
+        <li>Escalable: luego se pueden sumar pagos online, multi‑sucursal, CMS, etc.</li>
+      </ul>
+    </section>
+
+    <section id="alcance" class="card">
+      <h2>2) Alcance funcional (MVP)</h2>
+      
+      <!-- Bloque de alcance (Incluye / Fuera de alcance) -->
+      <div>
+        <h3>Incluye</h3>
+        <ul>
+          <li>Menú por categorías, tarjetas de producto, variantes simples y agregados.</li>
+          <li>Carrito: agregar/quitar, cantidades, notas, subtotales y total. <span class="pill">Persistencia</span></li>
+          <li>Checkout con datos del cliente y validaciones básicas.</li>
+          <li>Botón <strong>Enviar por WhatsApp</strong> con mensaje formateado.</li>
+          <li>Botones de redirección a <strong>Uber Eats</strong> y <strong>DoorDash</strong> (si el local opera allí).</li>
+          <li>SEO básico, imágenes optimizadas, responsive.</li>
+        </ul>
+        <h3>Fuera de alcance (fase 1)</h3>
+        <ul>
+          <li>Panel admin, pagos online, tracking en tiempo real.</li>
+          <li>Multi‑sucursal, cupones complejos, stock dinámico.</li>
+        </ul>
+      </div>
+      
+      <!-- Preview visual debajo del alcance -->
+      <h3 style="margin-top:18px">Ejemplo visual (preview interactivo)</h3>
+      <div class="cols">
+        <!-- PREVIEW INTERACTIVO: MENÚ -->
+        <div class="card menu-sample" id="demo-menu"></div>
+        <!-- PREVIEW INTERACTIVO: CARRITO / CHECKOUT -->
+        <div class="card" id="demo-cart">
+          <h3 style="margin-top:0">Carrito (preview)</h3>
+          <div id="cart-list" class="cart-list" style="display:flex;flex-direction:column;gap:10px"></div>
+          <div class="totals"><span>Subtotal</span><strong id="demo-subtotal">$ 0</strong></div>
+          <div class="totals"><span>Envío (ejemplo)</span><strong id="demo-envio">$ 1.000</strong></div>
+          <div class="totals" style="font-size:18px"><span>Total</span><strong id="demo-total">$ 1.000</strong></div>
+          <h3>Checkout (campos ejemplo)</h3>
+          <ul>
+            <li>Nombre y teléfono</li>
+            <li>Dirección y referencias</li>
+            <li>Zona / Horario</li>
+            <li>Forma de pago</li>
+            <li>Notas</li>
+          </ul>
+          <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:10px">
+            <button class="btn" onclick="demoOpenWA()">Enviar por WhatsApp</button>
+            <a class="btn secondary" href="https://www.ubereats.com/" target="_blank" rel="noopener">Pedir en Uber Eats</a>
+            <a class="btn secondary" href="https://www.doordash.com/" target="_blank" rel="noopener">Pedir en DoorDash</a>
+          </div>
+        </div>
+      </div>
+
+      <script>
+        // Datos de ejemplo
+        const DEMO_ITEMS = [
+          {id:'napo', name:'Pizza Napolitana', desc:'Salsa, muzza, tomate, orégano', price:2800, img:'https://images.unsplash.com/photo-1604908176997-431a8c9f1f5b?q=80&w=400&auto=format&fit=crop'},
+          {id:'emp', name:'Empanadas x12', desc:'Carne, pollo, jamón y queso', price:9000, img:'https://images.unsplash.com/photo-1544025162-d76694265947?q=80&w=400&auto=format&fit=crop'}
+        ];
+        const cart = new Map();
+      
+        function money(n){return `$ ${n.toLocaleString('es-AR')}`}
+      
+        function renderMenu(){
+          const wrap = document.getElementById('demo-menu');
+          wrap.innerHTML = DEMO_ITEMS.map(it=>`
+            <div class="item" data-id="${it.id}">
+              <div class="left">
+                <img src="${it.img}" alt="${it.name}">
+                <div>
+                  <strong>${it.name}</strong>
+                  <div class="muted">${it.desc}</div>
+                </div>
+              </div>
+              <div class="qty">
+                <span>${money(it.price)}</span>
+                <button class="ghost" onclick="demoDec('${it.id}')">-</button>
+                <span id="q-${it.id}">1</span>
+                <button class="ghost" onclick="demoInc('${it.id}')">+</button>
+                <button class="btn secondary" onclick="demoAdd('${it.id}')">Agregar</button>
+              </div>
+            </div>
+          `).join('') + `<div class="totals"><span>Total estimado</span><strong id="demo-est">$ 0</strong></div>`;
+        }
+      
+        function demoQty(id){const el=document.getElementById('q-'+id);return Math.max(1, parseInt(el?.innerText||'1',10));}
+        function setQty(id,val){const el=document.getElementById('q-'+id);if(el){ el.innerText=String(Math.max(1,val)); calcEst(); }}
+        function demoInc(id){ setQty(id, demoQty(id)+1); }
+        function demoDec(id){ setQty(id, demoQty(id)-1); }
+      
+        function demoAdd(id){
+          const it = DEMO_ITEMS.find(x=>x.id===id);
+          const qty = demoQty(id);
+          const prev = cart.get(id)?.qty||0;
+          cart.set(id, {qty: prev+qty, subtotal: (prev+qty)*it.price, it});
+          renderCart();
+        }
+      
+        function renderCart(){
+          const list=document.getElementById('cart-list'); if(!list) return;
+          list.innerHTML=Array.from(cart.values()).map(({qty,subtotal,it})=>`
+            <div class="row">
+              <div>
+                <strong>${it.name}</strong>
+                <div class="muted">${qty} × ${money(it.price)}</div>
+              </div>
+              <div style="display:flex;align-items:center;gap:8px">
+                <span class="price-tag">${money(subtotal)}</span>
+                <button class="ghost" title="Quitar" onclick="demoRemove('${it.id}')">×</button>
+              </div>
+            </div>`).join('');
+          const subtotal=Array.from(cart.values()).reduce((a,b)=>a+b.subtotal,0);
+          document.getElementById('demo-subtotal').innerText=money(subtotal);
+          const envio=1000;
+          document.getElementById('demo-total').innerText=money(subtotal+envio);
+          calcEst();
+        }
+        function demoRemove(id){cart.delete(id);renderCart();}
+        function calcEst(){
+          const est=DEMO_ITEMS.reduce((a,it)=>{const q=demoQty(it.id);return a+q*it.price;},0);
+          const el=document.getElementById('demo-est'); if(el) el.innerText=money(est);
+        }
+      
+        // Render inicial
+        renderMenu();
+        renderCart();
+        calcEst();
+      </script>
+    </section>
+
+    <section id="flujo" class="card">
+      <h2>3) Flujo del usuario</h2>
+      <ol>
+        <li>Entra al sitio → navega categorías y productos.</li>
+        <li>Arma su <strong>carrito</strong> con cantidades y opciones.</li>
+        <li>Pasa por <strong>Checkout</strong> y completa sus datos.</li>
+        <li>Toca <strong>Enviar por WhatsApp</strong> y envía el pedido.</li>
+      </ol>
+    </section>
+
+    <section id="ejemplo" class="card">
+      <h2>4) Ejemplo de mensaje de WhatsApp</h2>
+      <div class="wa-preview" id="wa">
+Hola! Quiero hacer este pedido:
+
+• Napolitana x2 – $5.600
+  - Agregados: extra queso
+• Empanadas (carne) x12 – $9.000
+
+Subtotal: $14.600
+Envío: $1.000
+TOTAL: $15.600
+
+Datos del cliente:
+Nombre: Juan Pérez
+Dirección: San Martín 123, 1°B (timbre Pérez)
+Zona/Horario: Centro / 20:30
+Pago: Efectivo
+Teléfono: 351-555-1234
+Notas: Sin picante, porfa.
+      </div>
+      <div style="margin-top:10px;display:flex;gap:10px;flex-wrap:wrap">
+        <button class="btn" onclick="copyWA()">Copiar mensaje</button>
+        <button class="btn secondary" onclick="openWA()">Abrir en WhatsApp</button>
+        <a class="btn secondary" href="https://www.ubereats.com/" target="_blank" rel="noopener">Pedir en Uber Eats</a>
+        <a class="btn secondary" href="https://www.doordash.com/" target="_blank" rel="noopener">Pedir en DoorDash</a>
+        <span class="muted">N° destino (ejemplo): <code id="wanum">5493516441124</code></span>
+      </div>
+      <script>
+        function copyWA(){
+          const txt=document.getElementById('wa').innerText.trim();
+          navigator.clipboard.writeText(txt).then(()=>alert('Mensaje copiado.'))
+        }
+        function openWA(){
+          const txt=encodeURIComponent(document.getElementById('wa').innerText.trim());
+          const num=document.getElementById('wanum').innerText.trim();
+          window.open(`https://wa.me/${num}?text=${txt}`,'_blank');
+        }
+      </script>
+    </section>
+
+    <section id="tiempos" class="card">
+      <h2>5) Tiempos de implementación</h2>
+      <table class="table">
+        <tr><th>Hito</th><th>Detalle</th><th>Duración</th></tr>
+        <tr><td>Kickoff + diseño base</td><td>Identidad visual, layout, navegación</td><td>0,5 día</td></tr>
+        <tr><td>Menú + carrito + checkout</td><td>Catálogo, estados, validaciones</td><td>1,5–2 días</td></tr>
+        <tr><td>WhatsApp + SEO + QA</td><td>Formateo de mensaje + pruebas</td><td>0,5 día</td></tr>
+        <tr><td>Deploy + ajustes</td><td>Vercel + mediciones iniciales</td><td>0,5 día</td></tr>
+      </table>
+      <p><strong>Plazo estimado total:</strong> 3–4 días hábiles desde la recepción de contenidos.</p>
+    </section>
+
+    <section id="presupuesto" class="card">
+      <h2>6) Presupuesto (opciones)</h2>
+      <div class="grid cols-3">
+        <div class="card">
+          <h3 style="margin-top:0">Opción A – MVP Base</h3>
+          <p class="muted">Menú + carrito + checkout + WhatsApp + SEO básico</p>
+          <p class="price">USD 300–350</p>
+          <ul>
+            <li>Gestión de menú por JSON/Planilla</li>
+            <li>1 ronda de ajustes</li>
+            <li>30 días de garantía de correcciones</li>
+          </ul>
+        </div>
+        <div class="card" style="outline:2px solid rgba(76,201,240,.4)">
+          <h3 style="margin-top:0">Opción B – Estándar</h3>
+          <p class="muted">+ Buscador/filtros, promos, banner horario, analítica</p>
+          <p class="price">USD 400–600</p>
+          <ul>
+            <li>Hasta 2 rondas de ajustes</li>
+            <li>Recomendado para locales con más rotación</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3 style="margin-top:0">Opción C – Pro</h3>
+          <p class="muted">Panel admin, multi‑sucursal, pagos online, cupones</p>
+          <p class="price">USD 800+</p>
+          <ul>
+            <li>Alcance a medida</li>
+            <li>Integraciones adicionales</li>
+          </ul>
+        </div>
+      </div>
+      <p class="muted">*Hosting y dominios se cotizan por separado si no los proveen.</p>
+    </section>
+
+    <section id="extras" class="card">
+      <h2>7) Mantenimiento y extras</h2>
+      <div class="grid cols-2">
+        <div class="card">
+          <h3 style="margin-top:0">Plan Básico</h3>
+          <p class="price">USD 40–50 / mes</p>
+          <ul>
+            <li>Soporte y miniajustes</li>
+            <li>Actualizaciones de menú</li>
+            <li>Monitoreo básico</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3 style="margin-top:0">Plan Crecimiento</h3>
+          <p class="price">a convenir</p>
+          <ul>
+            <li>Banners estacionales y promos</li>
+            <li>AB tests de portada</li>
+            <li>Reportes periódicos</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section id="next" class="card">
+      <h2>8) Próximos pasos</h2>
+      <ol>
+        <li>Aprobación de alcance y opción de presupuesto.</li>
+        <li>Envío de contenidos: logo, paleta, menú, número de WhatsApp, horarios y zonas.</li>
+        <li>Kickoff y primera demo.</li>
+        <li>Ajustes finales y publicación.</li>
+      </ol>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:10px">
+        <button class="btn">Aceptar Propuesta</button>
+        <button class="btn secondary" onclick="window.print()">Imprimir / Guardar PDF</button>
+      </div>
+    </section>
+
+    <footer>
+      <p>Consultas · WhatsApp: <strong>+54 3516641124</strong> · Email: <strong>titomanbarreto@gmail.com</strong></p>
+      <div class="signature" style="margin-top:6px;font-family: 'Segoe Script','Brush Script MT',cursive; font-size:16px; opacity:.85;">
+        — Víctor Barreto 2025 —
+      </div>
+    </footer>
+
+  </div>
+
+  <button class="btn print" onclick="window.print()">Imprimir / PDF</button>
+</body>
+</html>
