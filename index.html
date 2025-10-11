@@ -1,263 +1,468 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Maestro Lee</title>
-  
-  <!-- SEO -->
-  <meta name="description" content="Restaurante Maestro Lee - Comida china hecha por manos venezolanas. Sopas, arroces, carnes, pastas y más.">
-  <meta name="keywords" content="comida china, restaurante, Maestro Lee, venezolanos, sopas, arroz, pollo, carne, cerdo, pastas">
-  <meta name="author" content="Maestro Lee">
-
-  <!-- Favicon -->
-  <link rel="icon" href="img/favicon.png" type="image/png">
-
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Maestro Lee – Menú y Carrito</title>
+  <meta name="description" content="Restaurante Maestro Lee – Menú por categorías con carrito e integración a WhatsApp." />
+  <link rel="icon" href="img/favicon.png" type="image/png" />
   <style>
-    body {
-      font-family: "Segoe UI", Arial, sans-serif;
-      margin: 0;
-      background: #fff8f0;
-      color: #333;
+    :root{
+      --bg:#fff8f0; --panel:#ffffff; --brand:#b22222; --brand-dark:#8b0000; --gold:#ffd700; --text:#222;
+      --muted:#6b7280; --border:#f1d87a; --shadow: 0 10px 30px rgba(0,0,0,.15);
+      --radius:14px;
     }
-    header {
-      background: linear-gradient(135deg, #b22222, #8b0000);
-      color: #ffd700;
-      padding: 30px 20px;
-      text-align: center;
-      border-bottom: 5px solid #ffd700;
-    }
-    header h1 {
-      margin: 0;
-      font-size: 3em;
-      letter-spacing: 2px;
-      font-weight: bold;
-    }
-    header p {
-      margin: 5px 0 0;
-      font-style: italic;
-      font-size: 1.2em;
-    }
-    nav {
-      background: #333;
-      padding: 12px;
-      text-align: center;
-      border-bottom: 3px solid #ffd700;
-    }
-    nav a {
-      color: #ffd700;
-      text-decoration: none;
-      margin: 0 18px;
-      font-weight: bold;
-      font-size: 1.1em;
-      transition: color 0.3s;
-    }
-    nav a:hover {
-      color: #fff;
-    }
-    section {
-      padding: 50px 20px;
-      max-width: 1000px;
-      margin: auto;
-    }
-    h2 {
-      color: #b22222;
-      border-bottom: 3px solid #ffd700;
-      display: inline-block;
-      margin-bottom: 25px;
-      padding-bottom: 5px;
-      font-size: 2em;
-    }
-    .menu-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 25px;
-    }
-    .plato {
-      background: #fff;
-      border: 2px solid #ffd700;
-      border-radius: 10px;
-      overflow: hidden;
-      text-align: center;
-      box-shadow: 0 3px 8px rgba(0,0,0,0.15);
-      transition: transform 0.3s, box-shadow 0.3s;
-    }
-    .plato:hover {
-      transform: scale(1.07);
-      box-shadow: 0 6px 18px rgba(0,0,0,0.3);
-    }
-    .plato img {
-      width: 100%;
-      height: 200px;
-      object-fit: cover;
-      border-bottom: 2px solid #ffd700;
-    }
-    .plato h3 {
-      margin: 12px 0 5px;
-      color: #b22222;
-      font-size: 1.3em;
-    }
-    .plato p {
-      margin: 0 0 15px;
-      font-size: 1.2em;
-      font-weight: bold;
-      color: #333;
-    }
-    footer {
-      background: #8b0000;
-      color: #ffd700;
-      text-align: center;
-      padding: 25px;
-      border-top: 4px solid #ffd700;
-    }
-    footer a {
-      color: #fff;
-      text-decoration: none;
-    }
+    *{box-sizing:border-box}
+    html,body{margin:0; font-family:"Segoe UI", Arial, system-ui, -apple-system, sans-serif; background:var(--bg); color:var(--text)}
+    header{background:linear-gradient(135deg, var(--brand), var(--brand-dark)); color:var(--gold); padding:28px 16px; text-align:center; border-bottom:4px solid var(--gold)}
+    header h1{margin:0; font-size:2.4rem; letter-spacing:.5px}
+    header p{margin:6px 0 0; font-style:italic}
 
-    /* Formulario de contacto */
-    form {
-      margin-top: 20px;
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-    }
-    input, textarea {
-      padding: 12px;
-      border: 2px solid #ffd700;
-      border-radius: 6px;
-      font-size: 1em;
-      outline: none;
-    }
-    input:focus, textarea:focus {
-      border-color: #b22222;
-    }
-    button {
-      padding: 12px;
-      background: #b22222;
-      color: #ffd700;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-      font-weight: bold;
-      font-size: 1em;
-      transition: background 0.3s;
-    }
-    button:hover {
-      background: #8b0000;
-    }
+    nav.top{background:#111827; border-bottom:3px solid var(--gold); position:sticky; top:0; z-index:40}
+    nav.top .wrap{max-width:1100px; margin:auto; padding:10px 16px; display:flex; gap:14px; align-items:center; justify-content:space-between}
+    .brand-mini{display:flex; gap:10px; align-items:center; color:#fff}
+    .brand-mini img{width:28px; height:28px; border-radius:50%; border:1px solid var(--gold)}
+    .brand-mini strong{color:var(--gold)}
 
-    /* BOTÓN DE WHATSAPP */
-    .whatsapp {
-      position: fixed;
-      bottom: 20px;
-      right: 20px;
-      background: #25D366;
-      color: white;
-      border-radius: 50%;
-      width: 65px;
-      height: 65px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 32px;
-      text-decoration: none;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.4);
-      transition: transform 0.2s;
-      z-index: 1000;
-    }
-    .whatsapp:hover {
-      transform: scale(1.15);
-      background: #20b954;
-    }
+    .phone-pill{display:flex; align-items:center; gap:6px; color:#e5e7eb; font-size:.95rem}
+    .phone-pill input{width:150px; padding:6px 10px; border-radius:10px; border:1px solid #374151; background:#111827; color:#e5e7eb}
+
+    .lang-pill{display:flex; gap:6px; align-items:center}
+    .lang-pill .lang{padding:6px 10px; border-radius:999px; border:1px solid var(--gold); background:#111827; color:#f3f4f6; cursor:pointer; font-weight:700}
+    .lang-pill .lang.active{background:var(--gold); color:#111827}
+    .phone-pill input{width:150px; padding:6px 10px; border-radius:10px; border:1px solid #374151; background:#111827; color:#e5e7eb}
+
+    main{max-width:1100px; margin:auto; padding:24px 16px 120px}
+
+    h2.section-title{color:var(--brand); border-bottom:3px solid var(--gold); display:inline-block; padding-bottom:6px; margin:10px 0 18px}
+
+    /* Categorías */
+    .cats{display:flex; gap:8px; flex-wrap:wrap; margin:10px 0 18px}
+    .cat-btn{padding:8px 12px; border:2px solid var(--gold); background:var(--panel); border-radius:999px; cursor:pointer; font-weight:600; transition:.15s}
+    .cat-btn:hover{transform:translateY(-1px)}
+    .cat-btn.active{background:var(--brand); color:var(--gold); border-color:var(--brand-dark)}
+
+    /* Grid de platos */
+    .grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:18px}
+    .card{background:var(--panel); border:2px solid var(--gold); border-radius:var(--radius); overflow:hidden; box-shadow:var(--shadow); display:flex; flex-direction:column}
+    .card img{width:100%; height:160px; object-fit:cover; border-bottom:2px solid var(--gold)}
+    .card .info{padding:12px}
+    .card h3{margin:0 0 6px; color:var(--brand)}
+    .card p{margin:0; color:var(--muted)}
+    .card .row{display:flex; align-items:center; justify-content:space-between; margin-top:10px}
+    .price{font-weight:700; font-size:1.05rem; color:#111}
+    .add{padding:8px 10px; border:none; cursor:pointer; border-radius:10px; font-weight:700; color:var(--gold); background:var(--brand)}
+    .add:hover{filter:brightness(.95)}
+
+    /* FAB carrito */
+    .fab{position:fixed; right:18px; bottom:18px; background:var(--brand); color:var(--gold); border:3px solid var(--gold); width:64px; height:64px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:26px; box-shadow:var(--shadow); cursor:pointer; z-index:60}
+    .fab .badge{position:absolute; top:-6px; right:-6px; background:#111827; color:#fff; border:2px solid var(--gold); width:26px; height:26px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:800; font-size:.9rem}
+
+    /* Drawer carrito */
+    .drawer{position:fixed; inset:0; pointer-events:none;}
+    .drawer.open{pointer-events:auto}
+    .drawer .backdrop{position:absolute; inset:0; background:rgba(0,0,0,.45); opacity:0; transition:.2s}
+    .drawer.open .backdrop{opacity:1}
+    .panel{position:absolute; right:0; top:0; bottom:0; width:100%; max-width:410px; background:#111827; color:#f3f4f6; transform:translateX(100%); transition:.25s; border-left:4px solid var(--gold); display:flex; flex-direction:column}
+    .drawer.open .panel{transform:translateX(0)}
+    .panel header{background:#111827; border-bottom:2px solid #374151; color:#f3f4f6; padding:14px 16px; display:flex; align-items:center; justify-content:space-between}
+    .panel h3{margin:0; font-size:1.2rem}
+    .close{background:#374151; border:none; color:#e5e7eb; padding:6px 10px; border-radius:8px; cursor:pointer}
+
+    .items{flex:1; overflow:auto; padding:12px 12px 0}
+    .ci{display:grid; grid-template-columns: 1fr auto; gap:8px; padding:10px; border:1px dashed #374151; border-radius:12px; margin-bottom:8px; background:#0b1220}
+    .ci h4{margin:0 0 4px}
+    .qty{display:flex; align-items:center; gap:8px}
+    .qty button{width:28px; height:28px; border:none; border-radius:6px; background:#374151; color:#fff; cursor:pointer}
+    .sum{padding:12px; border-top:2px solid #374151; background:#0b1220}
+    .sum .row{display:flex; justify-content:space-between; margin:6px 0}
+
+    .checkout{display:flex; flex-direction:column; gap:8px; padding:12px}
+    .checkout button{padding:12px; font-weight:800; border-radius:12px; border:2px solid var(--gold); cursor:pointer}
+    .btn-wa{background:#25D366; color:#0b2e13}
+    .btn-clear{background:#374151; color:#e5e7eb; border-color:#374151}
+
+    footer{background:var(--brand-dark); color:var(--gold); text-align:center; padding:20px; border-top:4px solid var(--gold)}
+    a, a:visited{color:inherit}
   </style>
 </head>
 <body>
-  <!-- Encabezado -->
   <header>
     <h1>Maestro Lee</h1>
-    <p>Comida china hecha por manos venezolanas</p>
+    <p id="tagline">Comida china hecha por manos venezolanas</p>
   </header>
 
-  <!-- Navegación -->
-  <nav>
-    <a href="#inicio">Inicio</a>
-    <a href="#menu">Menú</a>
-    <a href="#contacto">Contacto</a>
-  </nav>
-
-  <!-- Inicio -->
-  <section id="inicio">
-    <h2>Bienvenidos</h2>
-    <p>Disfruta de auténtica comida china con un toque venezolano. Ingredientes frescos, recetas tradicionales y el mejor sabor para compartir en familia.</p>
-  </section>
-
-  <!-- Menú con imágenes -->
-  <section id="menu">
-    <h2>Menú</h2>
-    <div class="menu-grid">
-      <div class="plato">
-        <img src="img/entremeses.jpg" alt="Bandeja de entremeses chinos">
-        <h3>Entremeses</h3>
-        <p>$15</p>
+  <nav class="top">
+    <div class="wrap">
+      <div class="brand-mini">
+        <img src="img/favicon.png" alt="Maestro Lee" />
+        <div id="brandText"><strong>Menú</strong> por categorías</div
       </div>
-      <div class="plato">
-        <img src="img/sopas.jpg" alt="Sopa tradicional china">
-        <h3>Sopas</h3>
-        <p>$10</p>
-      </div>
-      <div class="plato">
-        <img src="img/arroz.jpg" alt="Arroz frito estilo chino">
-        <h3>Arroz</h3>
-        <p>$18</p>
-      </div>
-      <div class="plato">
-        <img src="img/pollo.jpg" alt="Pollo salteado con vegetales">
-        <h3>Pollo</h3>
-        <p>$20</p>
-      </div>
-      <div class="plato">
-        <img src="img/carne.jpg" alt="Carne en salsa oriental">
-        <h3>Carne</h3>
-        <p>$25</p>
-      </div>
-      <div class="plato">
-        <img src="img/cerdo.jpg" alt="Cerdo agridulce">
-        <h3>Cerdo</h3>
-        <p>$25</p>
-      </div>
-      <div class="plato">
-        <img src="img/pastas.jpg" alt="Pastas chinas tradicionales">
-        <h3>Pastas</h3>
-        <p>$16</p>
+      <div class="phone-pill">
+        WhatsApp: +
+        <input id="waPhone" value="13215664889" aria-label="WhatsApp destino" />
+        <div class="lang-pill" role="group" aria-label="Idioma">
+        <button id="btnES" class="lang active" data-lang="es">ES</button>
+        <button id="btnEN" class="lang" data-lang="en">EN</button>
       </div>
     </div>
-  </section>
+  </nav>
 
-  <!-- Contacto -->
-  <section id="contacto">
-    <h2>Contacto</h2>
-    <p>📞 Teléfono: <a href="tel:+13215664889">+1 321 566 4889</a></p>
-    <p>📷 Instagram: <a href="https://instagram.com/maes.trolee" target="_blank">@maes.trolee</a></p>
+  <main>
+    <h2 class="section-title">Elegí tu categoría</h2>
+    <div id="cats" class="cats"></div>
 
-    <!-- Formulario -->
-    <form action="mailto:tuemail@correo.com" method="post" enctype="text/plain">
-      <label>Nombre:</label>
-      <input type="text" name="nombre" required>
-      <label>Mensaje:</label>
-      <textarea name="mensaje" rows="4" required></textarea>
-      <button type="submit">Enviar</button>
-    </form>
-  </section>
+    <div id="grid" class="grid" aria-live="polite"></div>
+  </main>
 
-  <!-- Pie de página -->
+  <!-- FAB carrito -->
+  <button id="fab" class="fab" aria-label="Abrir carrito" title="Carrito">
+    🛒
+    <span id="badge" class="badge">0</span>
+  </button>
+
+  <!-- Drawer carrito -->
+  <div id="drawer" class="drawer" aria-hidden="true">
+    <div class="backdrop" id="backdrop"></div>
+    <aside class="panel" role="dialog" aria-modal="true" aria-labelledby="cartTitle">
+      <header>
+        <h3 id="cartTitle">Tu pedido</h3>
+        <button class="close" id="closeDrawer">Cerrar ✕</button>
+      </header>
+      <div id="items" class="items"></div>
+      <div class="sum">
+        <div class="row"><span id="lblSubt">Subtotal</span><strong id="subt">$0</strong></div>
+        <div class="row"><span id="lblDelivery">Delivery</span><span id="ship">A coordinar</span></div>
+        <div class="row" style="font-size:1.15rem"><strong id="lblTotal">Total</strong><strong id="tot">$0</strong></div>
+      </div>
+      <div class="checkout">
+        <button class="btn-wa" id="sendWA" data-i18n="sendWA">Enviar pedido por WhatsApp</button>
+        <button class="btn-clear" id="clear" data-i18n="clear">Vaciar carrito</button>
+      </div>
+    </aside>
+  </div>
+
   <footer>
-    <p>&copy; 2025 Maestro Lee. Todos los derechos reservados.</p>
+    <p>&copy; 2025 Maestro Lee. Todos los derechos reservados. <a href="https://instagram.com/maes.trolee" target="_blank" rel="noopener">@maes.trolee</a></p>
   </footer>
 
-  <!-- BOTÓN DE WHATSAPP -->
-  <a href="https://wa.me/13215664889?text=Hola%20Maestro%20Lee%20🍜%20quiero%20hacer%20un%20pedido" class="whatsapp" target="_blank">
-    💬
-  </a>
+  <script>
+    // ====== i18n ======
+    const I18N = {
+      es: {
+        brand: 'Menú por categorías', tagline: 'Comida china hecha por manos venezolanas',
+        choose_category: 'Elegí tu categoría', add:'Agregar', subtotal:'Subtotal', delivery:'Delivery', total:'Total',
+        your_order:'Tu pedido', close:'Cerrar ✕', sendWA:'Enviar pedido por WhatsApp', clear:'Vaciar carrito',
+        cart_empty:'Tu carrito está vacío 🍜', ship_to_coord:'A coordinar', hello:'Hola Maestro Lee! Quiero hacer este pedido:'
+      },
+      en: {
+        brand: 'Menu by categories', tagline: 'Chinese food made with Venezuelan hands',
+        choose_category: 'Choose your category', add:'Add', subtotal:'Subtotal', delivery:'Delivery', total:'Total',
+        your_order:'Your order', close:'Close ✕', sendWA:'Send order via WhatsApp', clear:'Empty cart',
+        cart_empty:'Your cart is empty 🍜', ship_to_coord:'To arrange', hello:'Hello Maestro Lee! I would like to order:'
+      }
+    };
+
+    const CAT_NAMES = {
+      es: { entradas:'Entradas', sopas:'Sopas', arroces:'Arroces', pollo:'Pollo', carne:'Carne', cerdo:'Cerdo', pastas:'Pastas', bebidas:'Bebidas' },
+      en: { entradas:'Starters', sopas:'Soups', arroces:'Rice', pollo:'Chicken', carne:'Beef', cerdo:'Pork', pastas:'Noodles', bebidas:'Drinks' }
+    };
+
+    // ====== Datos del menú ======
+    const MENU = [
+      {id:'entradas',  name:'Entradas',
+        items:[
+          {id:'rollitos', name:'Rollitos Primavera (4u)', price:4500, img:'img/entremeses.png'},
+          {id:'gyoza', name:'Gyoza de cerdo (6u)', price:5200, img:'img/gyozadecerdo.png'},
+          {id:'bao', name:'Baos al vapor (2u)', price:5800, img:'img/baosalvapor.png'},
+          {id:'ensalada-agar', name:'Ensalada de agar-agar', price:3900, img:'img/ensaladaagar.png'},
+          {id:'wantan-frito', name:'Wantán frito (8u)', price:4800, img:'img/entremeses.png'},
+          {id:'alitas', name:'Alitas agridulces', price:6100, img:'img/entremeses.png'},
+        ]},
+      {id:'sopas',     name:'Sopas',
+        items:[
+          {id:'sopa-miso', name:'Sopa Miso', price:3600, img:'img/sopas.png'},
+          {id:'sopa-wonton', name:'Sopa Wonton', price:4300, img:'img/sopas.png'},
+          {id:'sopa-agripicante', name:'Sopa Agri-Picante', price:4200, img:'img/sopas.png'},
+          {id:'ramen-pollo', name:'Ramen de Pollo', price:6400, img:'img/ramen.png'},
+          {id:'ramen-cerdo', name:'Ramen de Cerdo', price:6900, img:'img/cerdo.png'},
+          {id:'udon-mar', name:'Udon del Mar', price:7500, img:'img/Udon.png'},
+        ]},
+      {id:'arroces',   name:'Arroces',
+        items:[
+          {id:'arroz-mr', name:'Arroz Maestro Lee', price:6800, img:'img/arroz.png'},
+          {id:'arroz-chaufa', name:'Chaufa peruano', price:7000, img:'img/arroz.png'},
+          {id:'arroz-cantones', name:'Arroz Cantones', price:6400, img:'img/arroz.png'},
+          {id:'arroz-vegetal', name:'Arroz con vegetales', price:5900, img:'img/arroz.png'},
+          {id:'arroz-camaron', name:'Arroz con camarones', price:8200, img:'img/arroz2.png'},
+          {id:'arroz-anana', name:'Arroz con ananá', price:6100, img:'img/arroz.png'},
+        ]},
+      {id:'pollo',     name:'Pollo',
+        items:[
+          {id:'pollo-gongbao', name:'Pollo Gong Bao', price:8400, img:'img/pollo.png'},
+          {id:'pollo-agridulce', name:'Pollo agridulce', price:7900, img:'img/pollo.png'},
+          {id:'pollo-curry', name:'Pollo al curry', price:8200, img:'img/pollo.png'},
+          {id:'pollo-salteado', name:'Pollo salteado', price:7800, img:'img/pollo.png'},
+          {id:'pollo-sesamo', name:'Pollo al sésamo', price:8300, img:'img/pollo.png'},
+          {id:'pollo-naranja', name:'Pollo a la naranja', price:8600, img:'img/pollo.png'},
+        ]},
+      {id:'carne',     name:'Carne',
+        items:[
+          {id:'carne-mongoliana', name:'Carne mongoliana', price:9900, img:'img/carne.png'},
+          {id:'carne-ostras', name:'Carne con salsa de ostras', price:10200, img:'img/carne.png'},
+          {id:'teriyaki', name:'Teriyaki de res', price:10400, img:'img/carne.png'},
+          {id:'carne-brocoli', name:'Carne con brócoli', price:9500, img:'img/carne.png'},
+          {id:'carne-picante', name:'Carne picante', price:9800, img:'img/carne.png'},
+          {id:'lomo-negrito', name:'Lomo salteado', price:10500, img:'img/carne.png'},
+        ]},
+      {id:'cerdo',     name:'Cerdo',
+        items:[
+          {id:'cerdo-agridulce', name:'Cerdo agridulce', price:8800, img:'img/cerdo.png'},
+          {id:'cerdo-caramelo', name:'Cerdo caramelizado', price:9100, img:'img/cerdo.png'},
+          {id:'cerdo-curry', name:'Cerdo al curry', price:8900, img:'img/cerdo.png'},
+          {id:'cerdo-katsu', name:'Katsu don de cerdo', price:9200, img:'img/cerdo.png'},
+          {id:'cerdo-soja', name:'Cerdo en soja dulce', price:9000, img:'img/cerdo.png'},
+          {id:'cerdo-szechuan', name:'Cerdo estilo Szechuan', price:9500, img:'img/cerdo.png'},
+        ]},
+      {id:'pastas',    name:'Pastas',
+        items:[
+          {id:'noodles-salt', name:'Noodles salteados', price:7200, img:'img/pastas.png'},
+          {id:'noodles-veget', name:'Noodles con vegetales', price:7000, img:'img/pastas.png'},
+          {id:'lo-mein', name:'Lo Mein clásico', price:7300, img:'img/pastas.png'},
+          {id:'yakisoba', name:'Yakisoba', price:7600, img:'img/pastas.png'},
+          {id:'dan-dan', name:'Dan Dan noodles', price:7700, img:'img/pastas.png'},
+          {id:'chow-mein', name:'Chow Mein', price:7100, img:'img/pastas.png'},
+        ]},
+      {id:'bebidas',   name:'Bebidas',
+        items:[
+          {id:'gaseosa', name:'Gaseosa 500ml', price:1800, img:'img/pastas.png'},
+          {id:'agua', name:'Agua mineral 500ml', price:1400, img:'img/pastas.png'},
+          {id:'te-frio', name:'Té frío', price:2200, img:'img/pastas.png'},
+          {id:'cerveza', name:'Cerveza 473ml', price:2800, img:'img/pastas.png'},
+          {id:'limonada', name:'Limonada', price:2300, img:'img/pastas.png'},
+          {id:'jugo', name:'Jugo natural', price:2400, img:'img/pastas.png'},
+        ]}
+    ];
+
+    // ====== Estado del carrito ======
+    const state = {
+      cat: MENU[0].id,
+      cart: /* id -> {item, qty} */ new Map(),
+      get total(){
+        let t = 0; for(const {item, qty} of this.cart.values()) t += item.price * qty; return t;
+      },
+      fmt(n){
+        try{ return new Intl.NumberFormat('es-AR',{style:'currency', currency:'ARS', maximumFractionDigits:0}).format(n) }catch{ return `$${n}` }
+      },
+      lang: (localStorage.getItem('ml_lang')||'es')
+    };
+
+    const catsEl = document.getElementById('cats');
+    const brandText = document.getElementById('brandText');
+    const tagline = document.getElementById('tagline');
+    const btnES = document.getElementById('btnES');
+    const btnEN = document.getElementById('btnEN');
+    const lblSubt = document.getElementById('lblSubt');
+    const lblDelivery = document.getElementById('lblDelivery');
+    const lblTotal = document.getElementById('lblTotal');
+    const gridEl = document.getElementById('grid');
+    const badgeEl = document.getElementById('badge');
+    const drawer = document.getElementById('drawer');
+    const backdrop = document.getElementById('backdrop');
+    const fab = document.getElementById('fab');
+    const closeDrawer = document.getElementById('closeDrawer');
+    const itemsEl = document.getElementById('items');
+    const subtEl = document.getElementById('subt');
+    const totEl = document.getElementById('tot');
+    const waBtn = document.getElementById('sendWA');
+    const clearBtn = document.getElementById('clear');
+    const waPhoneInput = document.getElementById('waPhone');
+
+    // ====== Persistencia en localStorage ======
+    const STORAGE_KEY = 'ml_cart_v1';
+    function saveCart(){
+      try{
+        const data = [...state.cart.values()].map(r=>({id:r.item.id, qty:r.qty}));
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+      }catch(e){ console.warn('No se pudo guardar el carrito', e); }
+    }
+    function loadCart(){
+      try{
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if(!raw) return;
+        const arr = JSON.parse(raw);
+        if(!Array.isArray(arr)) return;
+        for(const {id, qty} of arr){
+          if(!id || !qty) continue;
+          const item = MENU.flatMap(c=>c.items).find(x=>x.id===id);
+          if(item) state.cart.set(id, {item, qty: Math.max(1, qty|0)});
+        }
+        pulseBadge();
+      }catch(e){ console.warn('No se pudo cargar el carrito', e); }
+    }
+
+    window.addEventListener('storage', (ev)=>{ // sync entre pestañas
+      if(ev.key===STORAGE_KEY) { state.cart.clear(); loadCart(); updateCartUI(); }
+    });
+
+    // Render de categorías
+// Render de categorías
+function catName(cat){
+  return (CAT_NAMES[state.lang] && CAT_NAMES[state.lang][cat.id]) || cat.name;
+}
+function renderCats(){
+  catsEl.innerHTML = '';
+  for (const c of MENU){
+    const b = document.createElement('button');
+    b.className = 'cat-btn' + (c.id === state.cat ? ' active' : '');
+    b.textContent = catName(c);
+    b.onclick = () => {
+      state.cat = c.id;
+      renderCats();
+      renderGrid();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
+    catsEl.appendChild(b);
+  }
+}
+
+    // Render del grid según categoría
+    function renderGrid(){
+      const cat = MENU.find(x=>x.id===state.cat);
+      gridEl.innerHTML = '';
+      for(const item of cat.items){
+        const card = document.createElement('article');
+        card.className = 'card';
+        card.innerHTML = `
+          <img src="${item.img}" alt="${item.name}">
+          <div class="info">
+            <h3>${item.name}</h3>
+            <p>${catName(cat)}</p>
+            <div class="row">
+              <div class="price">${state.fmt(item.price)}</div>
+              <button class="add">${I18N[state.lang].add}</button>
+            </div>
+          </div>
+        `;
+        card.querySelector('.add').onclick = ()=> addToCart(item);
+        gridEl.appendChild(card);
+      }
+    }
+
+    function addToCart(item){
+      const had = state.cart.get(item.id);
+      state.cart.set(item.id, {item, qty:(had?had.qty:0)+1});
+      pulseBadge();
+      updateCartUI();
+    }
+    function changeQty(id, delta){
+      const row = state.cart.get(id); if(!row) return;
+      row.qty += delta; if(row.qty<=0) state.cart.delete(id); else state.cart.set(id,row);
+      updateCartUI();
+    }
+    function clearCart(){ state.cart.clear(); updateCartUI(); }
+
+    // Badge anim y conteo
+    function pulseBadge(){
+      const totalQty = [...state.cart.values()].reduce((s,x)=>s+x.qty,0);
+      badgeEl.textContent = totalQty;
+      badgeEl.animate([{transform:'scale(1)'},{transform:'scale(1.2)'},{transform:'scale(1)'}],{duration:250});
+    }
+
+    // Render del drawer
+    function updateCartUI(){
+      const totalQty = [...state.cart.values()].reduce((s,x)=>s+x.qty,0);
+      badgeEl.textContent = totalQty;
+
+      itemsEl.innerHTML = '';
+      if(totalQty===0){
+        itemsEl.innerHTML = `<p style="opacity:.8; padding:10px">${I18N[state.lang].cart_empty}</p>`;
+      } else {
+        for(const {item, qty} of state.cart.values()){
+          const el = document.createElement('div');
+          el.className = 'ci';
+          el.innerHTML = `
+            <div>
+              <h4>${item.name}</h4>
+              <div style="opacity:.75">${state.fmt(item.price)} · ${item.id}</div>
+            </div>
+            <div class="qty">
+              <button aria-label="Quitar 1">−</button>
+              <strong>${qty}</strong>
+              <button aria-label="Agregar 1">+</button>
+              <button title="Eliminar" style="margin-left:6px">🗑️</button>
+            </div>`;
+          const [btnMinus, btnPlus, btnTrash] = el.querySelectorAll('button');
+          // fallback safety by if-checks (avoid silent JS errors)
+          if(!btnMinus || !btnPlus || !btnTrash){
+            console.warn('Esperaba 3 botones en la fila del carrito, algo no coincidió.');
+          }
+          btnMinus.onclick = ()=> changeQty(item.id, -1);
+          btnPlus.onclick  = ()=> changeQty(item.id, +1);
+          btnTrash.onclick = ()=> { state.cart.delete(item.id); updateCartUI(); };
+          itemsEl.appendChild(el);
+        }
+      }
+      subtEl.textContent = state.fmt(state.total);
+      totEl.textContent  = state.fmt(state.total); // aquí podrías sumar delivery
+      saveCart();
+    }
+
+    // Drawer open/close
+    function openDrawer(){ drawer.classList.add('open'); drawer.setAttribute('aria-hidden','false'); }
+    function closeDrawerFn(){ drawer.classList.remove('open'); drawer.setAttribute('aria-hidden','true'); }
+    fab.onclick = openDrawer; backdrop.onclick = closeDrawerFn; closeDrawer.onclick = closeDrawerFn;
+    clearBtn.onclick = ()=>{ clearCart(); };
+
+    // WhatsApp compose
+    function t(k){ return (I18N[state.lang] && I18N[state.lang][k]) || k; }
+    function buildWAMessage(){
+      if(state.cart.size===0) return 'Hola Maestro Lee! Quiero hacer un pedido vacío (probando el sistema).';
+      const lines = [];
+      lines.push(t('hello'));
+      lines.push('');
+      for(const {item, qty} of state.cart.values()){
+        lines.push(`• ${item.name} x${qty} – ${state.fmt(item.price*qty)}`);
+      }
+      lines.push('');
+      lines.push(`${t('total')}: ${state.fmt(state.total)}`);
+      lines.push(`${t('delivery')}: *${t('ship_to_coord')}*`);
+      lines.push('Nombre y dirección: ');
+      return lines.join('\n');
+    }
+
+    function sendWA(){
+      const rawPhone = waPhoneInput.value.replace(/\D/g,'');
+      const msg = encodeURIComponent(buildWAMessage());
+      const url = `https://wa.me/${rawPhone}?text=${msg}`;
+      window.open(url, '_blank');
+    }
+    waBtn.onclick = sendWA;
+
+    // Init
+    loadCart();
+    renderCats();
+    renderGrid();
+    updateCartUI();
+    // aplicar idioma guardado
+    try{ (function(){
+      const lang = state.lang;
+      // set initial UI texts
+      const st = document.querySelector('.section-title'); if(st){ st.textContent = I18N[lang].choose_category; }
+      const ct = document.getElementById('cartTitle'); if(ct){ ct.textContent = I18N[lang].your_order; }
+      const cd = document.getElementById('closeDrawer'); if(cd){ cd.textContent = I18N[lang].close; }
+      const ship = document.getElementById('ship'); if(ship){ ship.textContent = I18N[lang].ship_to_coord; }
+      const sWA = document.getElementById('sendWA'); if(sWA){ sWA.textContent = I18N[lang].sendWA; }
+      const clr = document.getElementById('clear'); if(clr){ clr.textContent = I18N[lang].clear; }
+      const lbS = document.getElementById('lblSubt'); if(lbS){ lbS.textContent = I18N[lang].subtotal; }
+      const lbD = document.getElementById('lblDelivery'); if(lbD){ lbD.textContent = I18N[lang].delivery; }
+      const lbT = document.getElementById('lblTotal'); if(lbT){ lbT.textContent = I18N[lang].total; }
+    })(); }catch{}
+
+    // listeners idioma
+    const _btnES = document.getElementById('btnES'); const _btnEN = document.getElementById('btnEN');
+    if(_btnES){ _btnES.onclick = ()=>{ state.lang='es'; localStorage.setItem('ml_lang','es'); location.reload(); }; }
+    if(_btnEN){ _btnEN.onclick = ()=>{ state.lang='en'; localStorage.setItem('ml_lang','en'); location.reload(); }; }
+  </script>
 </body>
 </html>
