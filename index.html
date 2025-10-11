@@ -99,13 +99,15 @@
         <img src="img/favicon.png" alt="Maestro Lee" />
         <div id="brandText"><strong>Menú</strong> por categorías</div>
       
-      <div class="phone-pill">
-        WhatsApp: +
-        <input id="waPhone" value="13215664889" aria-label="WhatsApp destino" />
+        <div class="phone-pill">
+          WhatsApp: +
+          <input id="waPhone" ... />
+        </div>
         <div class="lang-pill" role="group" aria-label="Idioma">
-        <button id="btnES" class="lang active" data-lang="es">ES</button>
-        <button id="btnEN" class="lang" data-lang="en">EN</button>
-      </div>
+          <button id="btnES" class="lang active">ES</button>
+          <button id="btnEN" class="lang">EN</button>
+        </div>
+        
     </div>
   </nav>
 
@@ -276,9 +278,9 @@
     const subtEl = document.getElementById('subt');
     const totEl = document.getElementById('tot');
     const waBtn = document.getElementById('sendWA');
-const clearBtn = document.getElementById('clear');
-const waPhoneInput = document.getElementById('waPhone');
-const WA_PHONE = '18636062602'; // +1 (863) 606-2602
+    const clearBtn = document.getElementById('clear');
+    const waPhoneInput = document.getElementById('waPhone');
+    const WA_PHONE = '18636062602'; // +1 (863) 606-2602
 
 
     // ====== Persistencia en localStorage ======
