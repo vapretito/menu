@@ -100,8 +100,24 @@ header{
     .add:hover{filter:brightness(.95)}
 
     /* FAB carrito */
-    .fab{position:fixed; right:18px; bottom:18px; background:var(--brand); color:var(--gold); border:3px solid var(--gold); width:64px; height:64px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:26px; box-shadow:var(--shadow); cursor:pointer; z-index:60}
-    .fab .badge{position:absolute; top:-6px; right:-6px; background:#111827; color:#fff; border:2px solid var(--gold); width:26px; height:26px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:800; font-size:.9rem}
+/* === Fix FAB carrito === */
+.fab{
+  position: fixed !important;
+  right: max(16px, env(safe-area-inset-right) + 12px) !important;
+  bottom: max(16px, env(safe-area-inset-bottom) + 12px) !important;
+  left: auto !important;              /* anula cualquier 'left' heredado */
+  top: auto !important;
+  z-index: 1000;                      /* por encima de cards/drawer fondo */
+  width: 56px; height: 56px;
+  border-radius: 9999px;
+  display:flex; align-items:center; justify-content:center;
+  background:var(--brand); color:var(--gold); border:3px solid var(--gold);  height:64px;  font-size:20px; box-shadow:var(--shadow); 
+}
+
+/* cuando el drawer esté abierto y quieras despegarlo un toque, opcional */
+.drawer[aria-hidden="false"] ~ .fab {
+  transform: translateY(-4px);
+}
 
     /* Drawer carrito */
     .drawer{position:fixed; inset:0; pointer-events:none;}
@@ -129,6 +145,102 @@ header{
 
     footer{background:var(--brand-dark); color:var(--gold); text-align:center; padding:20px; border-top:4px solid var(--gold)}
     a, a:visited{color:inherit}
+
+/* ====== Microinteracciones ====== */
+
+/* Botón base (aplícalo a tus botones: .btn, .pill, etc.) */
+.btn-anim {
+  position: relative;
+  transition: transform .15s ease, box-shadow .2s ease, background-color .2s ease;
+  will-change: transform;
+}
+.btn-anim:hover { transform: translateY(-1px); box-shadow: 0 6px 18px rgba(0,0,0,.18); }
+.btn-anim:active { transform: translateY(0) scale(.98); }
+
+/* Brillo suave en hover (úsalo en botones principales) */
+.btn-glow:hover {
+  box-shadow: 0 0 0 6px color-mix(in oklab,var(--gold), transparent 82%);
+}
+
+/* Pulso sutil repetido (para “Add”) */
+@keyframes pulse {
+  0%,100% { transform: scale(1); }
+  50%     { transform: scale(1.04); }
+}
+.btn-pulse { animation: pulse 2.2s ease-in-out infinite; }
+
+/* Tarjetas: elevación en hover */
+.card-anim {
+  transition: transform .25s ease, box-shadow .25s ease, border-color .25s ease;
+}
+.card-anim:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 16px 40px rgba(0,0,0,.22);
+  border-color: var(--gold);
+}
+
+/* Pills de categorías: subrayado fluido */
+.pill-anim {
+  position: relative;
+  overflow: hidden;
+}
+.pill-anim::after{
+  content:''; position:absolute; left:8%; right:8%; bottom:4px; height:2px;
+  background: var(--brand); transform: scaleX(0); transform-origin:left; transition: transform .25s ease;
+}
+.pill-anim:hover::after, .pill-anim[aria-current="true"]::after { transform: scaleX(1); }
+
+/* Scroll reveal (entra suave desde abajo) */
+.reveal { opacity:0; transform: translateY(12px); transition: opacity .5s ease, transform .5s ease; }
+.reveal.is-in { opacity:1; transform: translateY(0); }
+
+/* Navbar con sombra cuando scrolleás */
+.top.scrolled { box-shadow: 0 6px 22px rgba(0,0,0,.28); }
+
+/* Ripple circular para clics en botones */
+.ripple-wrap { position:relative; overflow:hidden; }
+.ripple {
+  position:absolute; border-radius:50%; transform: scale(0);
+  background: color-mix(in oklab, var(--gold), white 25%);
+  opacity:.45; animation: ripple .55s ease-out forwards;
+}
+@keyframes ripple { to { transform: scale(12); opacity:0; } }
+/* Wordmark (SVG) en lugar del h1 */
+/* Tamaños escalables del logo y el wordmark */
+.logo-xl{
+  width: clamp(72px, 7vw, 120px);   /* antes 64–88; ahora más grande */
+}
+
+.brand-text{
+  display:flex; flex-direction:column; justify-content:center;
+}
+
+.brand-text .wordmark img,
+.brand-text .wordmark svg{
+  display:block;
+  height: clamp(52px, 6.2vw, 92px); /* << AUMENTA el tamaño del SVG acá */
+  width:auto;
+  /* alineación vertical fina con el logo */
+  transform: translateY(2px);
+}
+
+.brand-row{ gap: clamp(12px, 2vw, 22px); }
+
+/* tagline un toque más chico para dar jerarquía */
+#tagline{
+  margin-top: 6px;
+  font-size: clamp(0.95rem, 1.4vw, 1.15rem);
+  line-height: 1.2;
+}
+
+/* En móviles bajamos un poco para que no se corte */
+@media (max-width:520px){
+  .logo-xl{ width: 96px; }
+  .brand-text .wordmark img,
+  .brand-text .wordmark svg{ height: 64px; }
+}
+
+
   </style>
 </head>
 <body>
@@ -136,64 +248,79 @@ header{
     <div class="brand-row">
       <img src="img/maestro-lee-logo.png" alt="Maestro Lee — Comida China" class="logo-xl">
       <div class="brand-text">
-        <h1>Maestro Lee</h1>
+        <!-- Reemplaza el <h1> por el SVG -->
+        <div class="wordmark" aria-label="Maestro Lee" role="img">
+          <img src="img/maestro-lee-wordmark.svg" alt="Maestro Lee">
+        </div>
         <p id="tagline">Comida china hecha por manos venezolanas</p>
       </div>
     </div>
   </header>
   
   
-  <nav class="top">
-    <div class="wrap">
-      <div class="brand-mini">
-        <img src="img/maestro-lee-logo.png" alt="Maestro Lee" />
-        <div id="brandText"><strong>Menú</strong> por categorías</div>
-      
-        <div class="phone-pill">
-          WhatsApp: +
-          <input id="waPhone" ... />
-        </div>
-        <div class="lang-pill" role="group" aria-label="Idioma">
-          <button id="btnES" class="lang active">ES</button>
-          <button id="btnEN" class="lang">EN</button>
-        </div>
-        
+  
+<!-- NAV -->
+<nav class="top">
+  <div class="wrap">
+    <div class="brand-mini">
+      <img src="img/maestro-lee-logo.png" alt="Maestro Lee" />
+      <div id="brandText"><strong>Menú</strong> por categorías</div>
+
+      <div class="phone-pill">
+        WhatsApp: +
+        <input id="waPhone" ... />
+      </div>
+
+      <div class="lang-pill" role="group" aria-label="Idioma">
+        <!-- + animaciones -->
+        <button id="btnES" class="lang btn-anim ripple-wrap btn-glow">ES</button>
+        <button id="btnEN" class="lang btn-anim ripple-wrap">EN</button>
+      </div>
     </div>
-  </nav>
-
-  <main>
-    <h2 class="section-title">Elegí tu categoría</h2>
-    <div id="cats" class="cats"></div>
-
-    <div id="grid" class="grid" aria-live="polite"></div>
-  </main>
-
-  <!-- FAB carrito -->
-  <button id="fab" class="fab" aria-label="Abrir carrito" title="Carrito">
-    🛒
-    <span id="badge" class="badge">0</span>
-  </button>
-
-  <!-- Drawer carrito -->
-  <div id="drawer" class="drawer" aria-hidden="true">
-    <div class="backdrop" id="backdrop"></div>
-    <aside class="panel" role="dialog" aria-modal="true" aria-labelledby="cartTitle">
-      <header>
-        <h3 id="cartTitle">Tu pedido</h3>
-        <button class="close" id="closeDrawer">Cerrar ✕</button>
-      </header>
-      <div id="items" class="items"></div>
-      <div class="sum">
-        <div class="row"><span id="lblSubt">Subtotal</span><strong id="subt">$0</strong></div>
-        <div class="row"><span id="lblDelivery">Delivery</span><span id="ship">A coordinar</span></div>
-        <div class="row" style="font-size:1.15rem"><strong id="lblTotal">Total</strong><strong id="tot">$0</strong></div>
-      </div>
-      <div class="checkout">
-        <button class="btn-wa" id="sendWA" data-i18n="sendWA">Enviar pedido por WhatsApp</button>
-        <button class="btn-clear" id="clear" data-i18n="clear">Vaciar carrito</button>
-      </div>
-    </aside>
   </div>
+</nav>
+<main>
+  <h2 class="section-title">Elige tu categoría</h2>
+  <div id="cats" class="cats"></div>
+  <div id="grid" class="grid" aria-live="polite"></div>
+</main>
+
+<!-- FAB carrito -->
+<button id="fab" class="fab btn-anim btn-glow ripple-wrap" aria-label="Abrir carrito" title="Carrito">
+  🛒
+  <span id="badge" class="badge">0</span>
+</button>
+
+<!-- Drawer carrito -->
+<div id="drawer" class="drawer" aria-hidden="true">
+  <div class="backdrop" id="backdrop"></div>
+  <aside class="panel" role="dialog" aria-modal="true" aria-labelledby="cartTitle">
+    <header>
+      <h3 id="cartTitle">Tu pedido</h3>
+      <!-- + animaciones -->
+      <button class="close btn-anim ripple-wrap" id="closeDrawer">Cerrar ✕</button>
+    </header>
+
+    <div id="items" class="items"></div>
+
+    <div class="sum">
+      <div class="row"><span id="lblSubt">Subtotal</span><strong id="subt">$0</strong></div>
+      <div class="row"><span id="lblDelivery">Delivery</span><span id="ship">A coordinar</span></div>
+      <div class="row" style="font-size:1.15rem"><strong id="lblTotal">Total</strong><strong id="tot">$0</strong></div>
+    </div>
+
+    <div class="checkout">
+      <!-- + animaciones -->
+      <button class="btn-wa btn-anim btn-glow ripple-wrap" id="sendWA" data-i18n="sendWA">
+        Enviar pedido por WhatsApp
+      </button>
+      <button class="btn-clear btn-anim ripple-wrap" id="clear" data-i18n="clear">
+        Vaciar carrito
+      </button>
+    </div>
+  </aside>
+</div>
+
   <section id="instagram" style="max-width:1100px;margin:28px auto;padding:0 16px">
     <h2 class="section-title">Instagram</h2>
     <p style="margin:8px 0 20px">
@@ -397,7 +524,13 @@ header{
 function catName(cat){
   return (CAT_NAMES[state.lang] && CAT_NAMES[state.lang][cat.id]) || cat.name;
 }
-function renderCats(){
+function renderCats(data){
+  const catsEl = document.getElementById('cats');
+  if (!catsEl) {
+    console.warn('No encontré #cats aún. Reintentando cuando cargue el DOM…');
+    document.addEventListener('DOMContentLoaded', () => renderCats(data), { once:true });
+    return;
+  }
   catsEl.innerHTML = '';
   for (const c of MENU){
     const b = document.createElement('button');
@@ -551,5 +684,55 @@ function renderCats(){
     if(_btnES){ _btnES.onclick = ()=>{ state.lang='es'; localStorage.setItem('ml_lang','es'); location.reload(); }; }
     if(_btnEN){ _btnEN.onclick = ()=>{ state.lang='en'; localStorage.setItem('ml_lang','en'); location.reload(); }; }
   </script>
+  <script>
+ document.addEventListener('click', (e)=>{
+  const b = e.target.closest('button.add');
+  if(!b) return;
+  const txt = b.textContent;
+  b.disabled = true; b.textContent = '✔ Agregado';
+  setTimeout(()=>{ b.disabled = false; b.textContent = txt; }, 900);
+});
+
+    /* Sombra en navbar al scrollear */
+    (function(){
+      const topBar = document.querySelector('.top');
+      if(!topBar) return;
+      const onScroll = () => topBar.classList.toggle('scrolled', window.scrollY > 6);
+      onScroll(); window.addEventListener('scroll', onScroll, {passive:true});
+    })();
+    
+    /* Scroll reveal con IntersectionObserver */
+    (function(){
+      const els = document.querySelectorAll('.reveal');
+      if(!els.length) return;
+      const io = new IntersectionObserver((entries)=>{
+        entries.forEach(e => { if(e.isIntersecting){ e.target.classList.add('is-in'); io.unobserve(e.target); }});
+      }, { threshold: .12, rootMargin: '0px 0px -10% 0px' });
+      els.forEach(el => io.observe(el));
+    })();
+    
+    /* Ripple en botones con clase .ripple-wrap */
+    (function(){
+      const makeRipple = (ev) => {
+        const btn = ev.currentTarget;
+        const rect = btn.getBoundingClientRect();
+        const r = document.createElement('span');
+        r.className = 'ripple';
+        const size = Math.max(rect.width, rect.height);
+        r.style.width = r.style.height = size + 'px';
+        r.style.left = (ev.clientX - rect.left - size/2) + 'px';
+        r.style.top  = (ev.clientY - rect.top  - size/2) + 'px';
+        btn.appendChild(r);
+        r.addEventListener('animationend', ()=> r.remove());
+      };
+      document.querySelectorAll('.ripple-wrap').forEach(b=>{
+        b.addEventListener('click', makeRipple);
+      });
+    })();
+    
+    /* Touch-friendly : activa hover sutil en mobile al tocar */
+    document.addEventListener('touchstart', ()=>{}, {passive:true});
+    </script>
+    
 </body>
 </html>
