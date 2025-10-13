@@ -206,38 +206,24 @@ header{
 }
 @keyframes ripple { to { transform: scale(12); opacity:0; } }
 /* Wordmark (SVG) en lugar del h1 */
-/* Tamaños escalables del logo y el wordmark */
-.logo-xl{
-  width: clamp(72px, 7vw, 120px);   /* antes 64–88; ahora más grande */
+.brand-text .wordmark{
+  line-height: 0;             /* sin espacio extra */
+  display: inline-block;
 }
-
-.brand-text{
-  display:flex; flex-direction:column; justify-content:center;
-}
-
 .brand-text .wordmark img,
 .brand-text .wordmark svg{
   display:block;
-  height: clamp(52px, 6.2vw, 92px); /* << AUMENTA el tamaño del SVG acá */
-  width:auto;
-  /* alineación vertical fina con el logo */
-  transform: translateY(2px);
+  height: 60px;               /* ajustá el alto del SVG acá */
+  width: auto;
 }
 
-.brand-row{ gap: clamp(12px, 2vw, 22px); }
+/* Ajustar separación con el logo de la izquierda */
+.brand-row{ gap: 16px; }       /* si lo ves muy pegado, subí a 18–22px */
 
-/* tagline un toque más chico para dar jerarquía */
-#tagline{
-  margin-top: 6px;
-  font-size: clamp(0.95rem, 1.4vw, 1.15rem);
-  line-height: 1.2;
-}
-
-/* En móviles bajamos un poco para que no se corte */
+/* Responsive */
 @media (max-width:520px){
-  .logo-xl{ width: 96px; }
   .brand-text .wordmark img,
-  .brand-text .wordmark svg{ height: 64px; }
+  .brand-text .wordmark svg{ height: 38px; }
 }
 
 
