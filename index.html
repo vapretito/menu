@@ -278,330 +278,474 @@
   </footer>
 
   <script>
+
+let lang = window.APP_LANG || 'es'; // o como manejes ES/EN
+
+const itemName = (p) =>
+  p.name ?? (lang === 'es' ? p.name_es : p.name_en) ?? '';
+
+const itemDesc = (p) =>
+  p.desc ?? (lang === 'es' ? p.desc_es : p.desc_en) ?? '';
+
+const t = (es, en) => (lang === 'es' ? es : en);
+
+const money = (n) =>
+  (lang === 'es'
+    ? new Intl.NumberFormat('es-AR', { style:'currency', currency:'USD', minimumFractionDigits:0 }).format(n)
+    : new Intl.NumberFormat('en-US', { style:'currency', currency:'USD', minimumFractionDigits:0 }).format(n)
+  ).replace(/\s/g,''); // quita espacios duros si aparecen
+
     // ====== i18n ======
-    const I18N = {
-      es: {
-        brand: 'Menú por categorías', tagline: 'Comida china hecha por manos venezolanas',
-        choose_category: 'Elegí tu categoría', add:'Agregar', subtotal:'Subtotal', delivery:'Delivery', total:'Total',
-        your_order:'Tu pedido', close:'Cerrar ✕', sendWA:'Enviar pedido por WhatsApp', clear:'Vaciar carrito',
-        cart_empty:'Tu carrito está vacío 🍜', ship_to_coord:'A coordinar', hello:'Hola Maestro Lee! Quiero hacer este pedido:'
-      },
-      en: {
-        brand: 'Menu by categories', tagline: 'Chinese food made with Venezuelan hands',
-        choose_category: 'Choose your category', add:'Add', subtotal:'Subtotal', delivery:'Delivery', total:'Total',
-        your_order:'Your order', close:'Close ✕', sendWA:'Send order via WhatsApp', clear:'Empty cart',
-        cart_empty:'Your cart is empty 🍜', ship_to_coord:'To arrange', hello:'Hello Maestro Lee! I would like to order:'
-      }
-    };
+// === Helpers I18N (sin chocar con otros 't')
+const I18N = (() => {
+  let lang = localStorage.getItem('ml_lang') || 'es';
+  const ui = {
+    es: { choose_category:'Elige tu categoría', your_order:'Tu pedido', close:'Cerrar ✕', ship_to_coord:'A coordinar',
+          sendWA:'Enviar pedido por WhatsApp', clear:'Vaciar carrito', subtotal:'Subtotal', delivery:'Delivery',
+          total:'Total', hello:'Hola Maestro Lee! Quiero hacer un pedido:', cart_empty:'Tu carrito está vacío 🧺' },
+    en: { choose_category:'Choose your category', your_order:'Your order', close:'Close ✕', ship_to_coord:'To coordinate',
+          sendWA:'Send order via WhatsApp', clear:'Clear cart', subtotal:'Subtotal', delivery:'Delivery',
+          total:'Total', hello:"Hi Maestro Lee! I'd like to order:", cart_empty:'Your cart is empty 🧺' }
+  };
+  const set   = l => { lang = l; localStorage.setItem('ml_lang', l); };
+  const get   = () => lang;
+  const name  = p => p.name ?? (lang==='es' ? p.name_es : p.name_en) ?? '';
+  const desc  = p => p.desc ?? (lang==='es' ? p.desc_es : p.desc_en) ?? '';
+  const text  = k => (ui[lang] && ui[lang][k]) || k;
+  const money = n => new Intl.NumberFormat(lang==='es'?'es-AR':'en-US',
+                    {style:'currency',currency:'USD',minimumFractionDigits:0}).format(n).replace(/\s/g,'');
+  return { set, get, name, desc, text, money, ui };
+})();
 
-    const CAT_NAMES = {
-      es: { entradas:'Entradas', sopas:'Sopas', arroces:'Arroces', pollo:'Pollo', carne:'Carne', cerdo:'Cerdo', pastas:'Pastas', bebidas:'Bebidas' },
-      en: { entradas:'Starters', sopas:'Soups', arroces:'Rice', pollo:'Chicken', carne:'Beef', cerdo:'Pork', pastas:'Noodles', bebidas:'Drinks' }
-    };
+// ===== Categorías (ES/EN) =====
+const CAT_NAMES = {
+  es:{entremeses:'Entremeses',sopas:'Sopas',arroz:'Arroz',pollo:'Pollo',res:'Carne de Res',cerdo:'Cerdo',pastas:'Pastas',combos:'Combos',postre:'Postre'},
+  en:{entremeses:'Starters',  sopas:'Soups', arroz:'Rice', pollo:'Chicken',res:'Beef',      cerdo:'Pork', pastas:'Noodles',combos:'Combos',postre:'Dessert'}
+};
 
-    // ====== Datos del menú ======
-    const MENU = [
-      {id:'entradas',  name:'Entradas',
-        items:[
-          {id:'rollitos', name:'Rollitos Primavera (4u)', price:4500, img:'img/entremeses.png'},
-          {id:'gyoza', name:'Gyoza de cerdo (6u)', price:5200, img:'img/gyozadecerdo.png'},
-          {id:'bao', name:'Baos al vapor (2u)', price:5800, img:'img/baosalvapor.png'},
-          {id:'ensalada-agar', name:'Ensalada de agar-agar', price:3900, img:'img/ensaladaagar.png'},
-          {id:'wantan-frito', name:'Wantán frito (8u)', price:4800, img:'img/entremeses.png'},
-          {id:'alitas', name:'Alitas agridulces', price:6100, img:'img/entremeses.png'},
-        ]},
-      {id:'sopas',     name:'Sopas',
-        items:[
-          {id:'sopa-miso', name:'Sopa Miso', price:3600, img:'img/sopas.png'},
-          {id:'sopa-wonton', name:'Sopa Wonton', price:4300, img:'img/sopas.png'},
-          {id:'sopa-agripicante', name:'Sopa Agri-Picante', price:4200, img:'img/sopas.png'},
-          {id:'ramen-pollo', name:'Ramen de Pollo', price:6400, img:'img/ramen.png'},
-          {id:'ramen-cerdo', name:'Ramen de Cerdo', price:6900, img:'img/cerdo.png'},
-          {id:'udon-mar', name:'Udon del Mar', price:7500, img:'img/Udon.png'},
-        ]},
-      {id:'arroces',   name:'Arroces',
-        items:[
-          {id:'arroz-mr', name:'Arroz Maestro Lee', price:6800, img:'img/arroz.png'},
-          {id:'arroz-chaufa', name:'Chaufa peruano', price:7000, img:'img/arroz.png'},
-          {id:'arroz-cantones', name:'Arroz Cantones', price:6400, img:'img/arroz.png'},
-          {id:'arroz-vegetal', name:'Arroz con vegetales', price:5900, img:'img/arroz.png'},
-          {id:'arroz-camaron', name:'Arroz con camarones', price:8200, img:'img/arroz2.png'},
-          {id:'arroz-anana', name:'Arroz con ananá', price:6100, img:'img/arroz.png'},
-        ]},
-      {id:'pollo',     name:'Pollo',
-        items:[
-          {id:'pollo-gongbao', name:'Pollo Gong Bao', price:8400, img:'img/pollo.png'},
-          {id:'pollo-agridulce', name:'Pollo agridulce', price:7900, img:'img/pollo.png'},
-          {id:'pollo-curry', name:'Pollo al curry', price:8200, img:'img/pollo.png'},
-          {id:'pollo-salteado', name:'Pollo salteado', price:7800, img:'img/pollo.png'},
-          {id:'pollo-sesamo', name:'Pollo al sésamo', price:8300, img:'img/pollo.png'},
-          {id:'pollo-naranja', name:'Pollo a la naranja', price:8600, img:'img/pollo.png'},
-        ]},
-      {id:'carne',     name:'Carne',
-        items:[
-          {id:'carne-mongoliana', name:'Carne mongoliana', price:9900, img:'img/carne.png'},
-          {id:'carne-ostras', name:'Carne con salsa de ostras', price:10200, img:'img/carne.png'},
-          {id:'teriyaki', name:'Teriyaki de res', price:10400, img:'img/carne.png'},
-          {id:'carne-brocoli', name:'Carne con brócoli', price:9500, img:'img/carne.png'},
-          {id:'carne-picante', name:'Carne picante', price:9800, img:'img/carne.png'},
-          {id:'lomo-negrito', name:'Lomo salteado', price:10500, img:'img/carne.png'},
-        ]},
-      {id:'cerdo',     name:'Cerdo',
-        items:[
-          {id:'cerdo-agridulce', name:'Cerdo agridulce', price:8800, img:'img/cerdo.png'},
-          {id:'cerdo-caramelo', name:'Cerdo caramelizado', price:9100, img:'img/cerdo.png'},
-          {id:'cerdo-curry', name:'Cerdo al curry', price:8900, img:'img/cerdo.png'},
-          {id:'cerdo-katsu', name:'Katsu don de cerdo', price:9200, img:'img/cerdo.png'},
-          {id:'cerdo-soja', name:'Cerdo en soja dulce', price:9000, img:'img/cerdo.png'},
-          {id:'cerdo-szechuan', name:'Cerdo estilo Szechuan', price:9500, img:'img/cerdo.png'},
-        ]},
-      {id:'pastas',    name:'Pastas',
-        items:[
-          {id:'noodles-salt', name:'Noodles salteados', price:7200, img:'img/pastas.png'},
-          {id:'noodles-veget', name:'Noodles con vegetales', price:7000, img:'img/pastas.png'},
-          {id:'lo-mein', name:'Lo Mein clásico', price:7300, img:'img/pastas.png'},
-          {id:'yakisoba', name:'Yakisoba', price:7600, img:'img/pastas.png'},
-          {id:'dan-dan', name:'Dan Dan noodles', price:7700, img:'img/pastas.png'},
-          {id:'chow-mein', name:'Chow Mein', price:7100, img:'img/pastas.png'},
-        ]},
-      {id:'bebidas',   name:'Bebidas',
-        items:[
-          {id:'gaseosa', name:'Gaseosa 500ml', price:1800, img:'img/pastas.png'},
-          {id:'agua', name:'Agua mineral 500ml', price:1400, img:'img/pastas.png'},
-          {id:'te-frio', name:'Té frío', price:2200, img:'img/pastas.png'},
-          {id:'cerveza', name:'Cerveza 473ml', price:2800, img:'img/pastas.png'},
-          {id:'limonada', name:'Limonada', price:2300, img:'img/pastas.png'},
-          {id:'jugo', name:'Jugo natural', price:2400, img:'img/pastas.png'},
-        ]}
-    ];
+// ====== Menú real (único) — con descripciones ES/EN ======
+const MENU = [
+  { id:'entremeses', items:[
+    { id:'lumpias-2',
+      name_es:'Lumpias (2 piezas)', name_en:'Spring Rolls (2 pcs)',
+      desc_es:'Crujientes rollos fritos.', desc_en:'Crispy fried spring rolls.',
+      price:4.55, img:'img/entremeses.png' },
+    { id:'chop-especial',
+      name_es:'Chop Suey Especial', name_en:'Special Chop Suey',
+      desc_es:'Cerdo y jamón con repollo, zanahoria, apio y pimientos.', desc_en:'Pork and ham with cabbage, carrot, celery and peppers.',
+      price:9.99, img:'img/entremeses.png' },
+    { id:'chop-carne',
+      name_es:'Chop Suey con Carne', name_en:'Beef Chop Suey',
+      desc_es:'Carne salteada con brotes de soja, apio, repollo, zanahoria y pimientos.', desc_en:'Beef stir-fried with bean sprouts, celery, cabbage, carrot and peppers.',
+      price:10.99, img:'img/entremeses.png' },
+    { id:'chop-camarones',
+      name_es:'Chop Suey con Camarones', name_en:'Shrimp Chop Suey',
+      desc_es:'Camarones con verduras mixtas (repollo, pimientos y apio).', desc_en:'Shrimp with mixed vegetables (cabbage, peppers, celery).',
+      price:11.99, img:'img/entremeses.png' },
+    { id:'chop-pollo',
+      name_es:'Chop Suey con Pollo', name_en:'Chicken Chop Suey',
+      desc_es:'Pollo salteado con verduras crujientes.', desc_en:'Chicken stir-fried with crunchy vegetables.',
+      price:9.99, img:'img/entremeses.png' },
+    { id:'costillas-agridulces-4',
+      name_es:'Costillas Agridulces (4 piezas)', name_en:'Sweet & Sour Ribs (4 pcs)',
+      desc_es:'Costillas en salsa agridulce.', desc_en:'Ribs in sweet & sour sauce.',
+      price:11.99, img:'img/entremeses.png' },
+    { id:'dumpling-8',
+      name_es:'Dumpling (8 piezas)', name_en:'Dumplings (8 pcs)',
+      desc_es:'Rellenos al vapor.', desc_en:'Steamed stuffed dumplings.',
+      price:6.55, img:'img/entremeses.png' },
+  ]},
 
-    // ====== Estado del carrito ======
-    const state = {
-      cat: MENU[0].id,
-      cart: /* id -> {item, qty} */ new Map(),
-      get total(){
-        let t = 0; for(const {item, qty} of this.cart.values()) t += item.price * qty; return t;
-      },
-      fmt(n){
-        try{ return new Intl.NumberFormat('es-AR',{style:'currency', currency:'ARS', maximumFractionDigits:0}).format(n) }catch{ return `$${n}` }
-      },
-      lang: (localStorage.getItem('ml_lang')||'es')
-    };
+  { id:'sopas', items:[
+    { id:'sopa-wonton',
+      name_es:'Sopa de Wonton', name_en:'Wonton Soup',
+      desc_es:'Caldo de pollo con wonton.', desc_en:'Chicken broth with wontons.',
+      price:3.90, img:'img/sopas.png' },
+    { id:'sopa-wonton-mee',
+      name_es:'Sopa de Wonton Mee', name_en:'Wonton Mee Soup',
+      desc_es:'Caldo de pollo con wonton, cerdo y fideos.', desc_en:'Chicken broth with wontons, pork and noodles.',
+      price:4.75, img:'img/sopas.png' },
+  ]},
 
-    const catsEl = document.getElementById('cats');
-    const brandText = document.getElementById('brandText');
-    const tagline = document.getElementById('tagline');
-    const btnES = document.getElementById('btnES');
-    const btnEN = document.getElementById('btnEN');
-    const lblSubt = document.getElementById('lblSubt');
-    const lblDelivery = document.getElementById('lblDelivery');
-    const lblTotal = document.getElementById('lblTotal');
-    const gridEl = document.getElementById('grid');
-    const badgeEl = document.getElementById('badge');
-    const drawer = document.getElementById('drawer');
-    const backdrop = document.getElementById('backdrop');
-    const fab = document.getElementById('fab');
-    const closeDrawer = document.getElementById('closeDrawer');
-    const itemsEl = document.getElementById('items');
-    const subtEl = document.getElementById('subt');
-    const totEl = document.getElementById('tot');
-    const waBtn = document.getElementById('sendWA');
-    const clearBtn = document.getElementById('clear');
-    const waPhoneInput = document.getElementById('waPhone');
-    const WA_PHONE = '13215664889'; // +1 (863) 606-2602
+  { id:'arroz', items:[
+    { id:'arroz-especial',
+      name_es:'Arroz Frito Especial', name_en:'Special Fried Rice',
+      desc_es:'Arroz con cerdo, pollo, camarones, vegetales, huevo y brotes de soja.', desc_en:'Rice with pork, chicken, shrimp, veggies, egg and bean sprouts.',
+      price:9.25, img:'img/arroz.png' },
+    { id:'arroz-cerdo',
+      name_es:'Arroz Frito con Cerdo', name_en:'Fried Rice with Pork',
+      desc_es:'Cerdo, huevo, cebolla verde y brotes de soja.', desc_en:'Pork, egg, scallions and bean sprouts.',
+      price:8.99, img:'img/arroz.png' },
+    { id:'arroz-pollo',
+      name_es:'Arroz Frito con Pollo', name_en:'Fried Rice with Chicken',
+      desc_es:'Tiras de pollo, pimientos y cebolla verde.', desc_en:'Chicken strips, peppers and scallions.',
+      price:8.99, img:'img/arroz.png' },
+    { id:'arroz-carne',
+      name_es:'Arroz Frito con Carne', name_en:'Fried Rice with Beef',
+      desc_es:'Carne en cubos y vegetales mixtos.', desc_en:'Diced beef and mixed vegetables.',
+      price:12.99, img:'img/arroz.png' },
+    { id:'arroz-jamon',
+      name_es:'Arroz Frito con Jamón', name_en:'Fried Rice with Ham',
+      desc_es:'Jamón en cubitos, huevo, vegetales y brotes de soja.', desc_en:'Diced ham, egg, vegetables and bean sprouts.',
+      price:8.55, img:'img/arroz.png' },
+    { id:'arroz-vegetales',
+      name_es:'Arroz Frito con Vegetales', name_en:'Vegetable Fried Rice',
+      desc_es:'Vegetales mixtos y cebolla verde.', desc_en:'Mixed vegetables and scallions.',
+      price:6.99, img:'img/arroz.png' },
+  ]},
+
+  { id:'pollo', items:[
+    { id:'pollo-agridulce',
+      name_es:'Pollo Agridulce', name_en:'Sweet & Sour Chicken',
+      desc_es:'Pollo con salsa agridulce.', desc_en:'Chicken with sweet & sour sauce.',
+      price:11.25, img:'img/pollo.png' },
+    { id:'pollo-agridulce-pina',
+      name_es:'Pollo Agridulce con Piña', name_en:'Sweet & Sour Chicken with Pineapple',
+      desc_es:'Con piña en cubos y pimentón.', desc_en:'With pineapple chunks and bell pepper.',
+      price:11.99, img:'img/pollo.png' },
+    { id:'pollo-agridulce-picante',
+      name_es:'Pollo Agridulce Picante', name_en:'Spicy Sweet & Sour Chicken',
+      desc_es:'Pollo con salsa agridulce picante.', desc_en:'Chicken in spicy sweet & sour sauce.',
+      price:11.25, img:'img/pollo.png' },
+    { id:'pollo-vegetales',
+      name_es:'Pollo con Vegetales', name_en:'Chicken with Vegetables',
+      desc_es:'Pollo con vegetales mixtos.', desc_en:'Chicken with mixed vegetables.',
+      price:12.99, img:'img/pollo.png' },
+    { id:'pollo-brocoli',
+      name_es:'Pollo con Brócoli', name_en:'Chicken with Broccoli',
+      desc_es:'Pollo salteado con brócoli.', desc_en:'Stir-fried chicken with broccoli.',
+      price:12.99, img:'img/pollo.png' },
+    { id:'pollo-champinones',
+      name_es:'Pollo con Champiñones', name_en:'Chicken with Mushrooms',
+      desc_es:'Pollo con champiñones.', desc_en:'Chicken with mushrooms.',
+      price:12.99, img:'img/pollo.png' },
+    { id:'pollo-ostras',
+      name_es:'Pollo en Salsa de Ostras', name_en:'Chicken in Oyster Sauce',
+      desc_es:'Con cebolla, pimentón y cebollino en salsa de ostras.', desc_en:'With onion, bell pepper and chives in oyster sauce.',
+      price:11.99, img:'img/pollo.png' },
+    { id:'pollo-teriyaki',
+      name_es:'Pollo Teriyaki', name_en:'Chicken Teriyaki',
+      desc_es:'Pollo con mixto de vegetales y salsa teriyaki.', desc_en:'Chicken with mixed vegetables in teriyaki sauce.',
+      price:11.99, img:'img/pollo.png' },
+    { id:'pollo-naranja',
+      name_es:'Pollo a la Naranja', name_en:'Orange Chicken',
+      desc_es:'Pollo en salsa de naranja.', desc_en:'Chicken in orange sauce.',
+      price:11.25, img:'img/pollo.png' },
+  ]},
+
+  { id:'res', items:[
+    { id:'res-vegetales',
+      name_es:'Carne de Res con Vegetales', name_en:'Beef with Vegetables',
+      desc_es:'Carne con cebolla, pimientos, zanahoria y brócoli.', desc_en:'Beef with onion, peppers, carrot and broccoli.',
+      price:14.99, img:'img/carne.png' },
+    { id:'res-brocoli',
+      name_es:'Carne de Res con Brócoli', name_en:'Beef with Broccoli',
+      desc_es:'Carne salteada con ajo y jengibre.', desc_en:'Beef stir-fried with garlic and ginger.',
+      price:14.99, img:'img/carne.png' },
+    { id:'res-jengibre-cebollin',
+      name_es:'Carne de Res con Jengibre y Cebollín', name_en:'Beef with Ginger & Chives',
+      desc_es:'Carne salteada con ajo, jengibre y cebollino.', desc_en:'Beef stir-fried with garlic, ginger and chives.',
+      price:14.99, img:'img/carne.png' },
+    { id:'res-ostras',
+      name_es:'Carne de Res en Salsa de Ostras', name_en:'Beef in Oyster Sauce',
+      desc_es:'Carne con vegetales mixtos en salsa de ostras.', desc_en:'Beef with mixed vegetables in oyster sauce.',
+      price:14.99, img:'img/carne.png' },
+    { id:'res-champinones',
+      name_es:'Carne de Res con Champiñones', name_en:'Beef with Mushrooms',
+      desc_es:'Carne salteada con cebolla y champiñones.', desc_en:'Beef stir-fried with onion and mushrooms.',
+      price:14.99, img:'img/carne.png' },
+    { id:'res-jojoticos',
+      name_es:'Carne de Res con Jojoticos chinos', name_en:'Beef with Baby Corn',
+      desc_es:'Carne salteada con cebolla y jojoticos.', desc_en:'Beef stir-fried with onion and baby corn.',
+      price:15.44, img:'img/carne.png' },
+  ]},
+
+  { id:'cerdo', items:[
+    { id:'cerdo-agridulce',
+      name_es:'Cerdo Agridulce', name_en:'Sweet & Sour Pork',
+      desc_es:'Cerdo con salsa agridulce.', desc_en:'Pork in sweet & sour sauce.',
+      price:11.25, img:'img/cerdo.png' },
+    { id:'cerdo-vegetales',
+      name_es:'Cerdo con Vegetales', name_en:'Pork with Vegetables',
+      desc_es:'Cerdo con vegetales mixtos.', desc_en:'Pork with mixed vegetables.',
+      price:11.99, img:'img/cerdo.png' },
+    { id:'cerdo-jengibre-cebollin',
+      name_es:'Cerdo Jengibre y Cebollín', name_en:'Pork with Ginger & Chives',
+      desc_es:'Cerdo salteado con ajo, jengibre y cebollino.', desc_en:'Pork stir-fried with garlic, ginger and chives.',
+      price:11.99, img:'img/cerdo.png' },
+  ]},
+
+  { id:'pastas', items:[
+    { id:'pasta-carne',
+      name_es:'Pasta con Carne', name_en:'Noodles with Beef',
+      desc_es:'Fideos salteados con tiras de carne y vegetales.', desc_en:'Stir-fried noodles with beef and vegetables.',
+      price:11.99, img:'img/pastas.png' },
+    { id:'pasta-cerdo',
+      name_es:'Pasta con Cerdo', name_en:'Noodles with Pork',
+      desc_es:'Fideos con lonjas de cerdo y verduras crujientes.', desc_en:'Noodles with pork and crunchy vegetables.',
+      price:9.99, img:'img/pastas.png' },
+    { id:'pasta-pollo',
+      name_es:'Pasta con Pollo', name_en:'Noodles with Chicken',
+      desc_es:'Fideos con pollo y verduras crujientes.', desc_en:'Noodles with chicken and crunchy vegetables.',
+      price:9.99, img:'img/pastas.png' },
+    { id:'pasta-vegetales',
+      name_es:'Pasta con Vegetales', name_en:'Vegetable Noodles',
+      desc_es:'Fideos salteados con vegetales variados.', desc_en:'Stir-fried noodles with assorted vegetables.',
+      price:9.00, img:'img/pastas.png' },
+    { id:'pasta-especial',
+      name_es:'Pasta Especial', name_en:'Special Noodles',
+      desc_es:'Fideos con camarones, pollo, jamón y vegetales.', desc_en:'Noodles with shrimp, chicken, ham and vegetables.',
+      price:10.99, img:'img/pastas.png' },
+  ]},
+
+  { id:'combos', items:[
+    { id:'combo-veg-agridulce-lumpia',
+      name_es:'Arroz frito con vegetales + Pollo agridulce + Lumpia', name_en:'Veg fried rice + Sweet & sour chicken + Spring roll',
+      desc_es:'Combo individual.', desc_en:'Single combo.',
+      price:9.99, img:'img/combos.png' },
+    { id:'combo-especial-res-lumpia',
+      name_es:'Arroz frito especial + Carne con brócoli + Lumpia', name_en:'Special fried rice + Beef & broccoli + Spring roll',
+      desc_es:'Combo individual.', desc_en:'Single combo.',
+      price:11.99, img:'img/combos.png' },
+    { id:'combo-especial-cerdo-o-pollo',
+      name_es:'Arroz frito especial + Cerdo agridulce o Pollo con vegetales', name_en:'Special fried rice + Sweet & sour pork or Chicken & veggies',
+      desc_es:'Elegí una proteína.', desc_en:'Choose one protein.',
+      price:10.99, img:'img/combos.png' },
+    { id:'combo-arroz-costillas-chopsuey',
+      name_es:'Arroz frito + Costillas + Chop Suey', name_en:'Fried rice + Ribs + Chop suey',
+      desc_es:'Combo individual.', desc_en:'Single combo.',
+      price:9.99, img:'img/combos.png' },
+    { id:'combo-fideos-carnes-lumpia-costilla',
+      name_es:'Fideos (carne/pollo/cerdo) + Lumpia + Costilla', name_en:'Noodles (beef/chicken/pork) + Spring roll + Rib',
+      desc_es:'Elegí tu proteína.', desc_en:'Choose your protein.',
+      price:11.99, img:'img/combos.png' },
+    { id:'pan',
+      name_es:'Pan', name_en:'Bread',
+      desc_es:'Pan.', desc_en:'Bread.',
+      price:1.00, img:'img/combos.png' },
+  ]},
+
+  { id:'postre', items:[
+    { id:'tres-leches',
+      name_es:'Tres Leches', name_en:'Three-Milk Cake',
+      desc_es:'Clásico postre casero.', desc_en:'Classic milk-soaked cake.',
+      price:7.00, img:'img/postres.png' },
+    { id:'quesillo',
+      name_es:'Quesillo', name_en:'Flan',
+      desc_es:'Flan venezolano.', desc_en:'Venezuelan flan.',
+      price:5.00, img:'img/postres.png' },
+  ]},
+];
+
+// ==== Helpers para usar según idioma activo ====
 
 
-    // ====== Persistencia en localStorage ======
-    const STORAGE_KEY = 'ml_cart_v1';
-    function saveCart(){
-      try{
-        const data = [...state.cart.values()].map(r=>({id:r.item.id, qty:r.qty}));
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
-      }catch(e){ console.warn('No se pudo guardar el carrito', e); }
-    }
-    function loadCart(){
-      try{
-        const raw = localStorage.getItem(STORAGE_KEY);
-        if(!raw) return;
-        const arr = JSON.parse(raw);
-        if(!Array.isArray(arr)) return;
-        for(const {id, qty} of arr){
-          if(!id || !qty) continue;
-          const item = MENU.flatMap(c=>c.items).find(x=>x.id===id);
-          if(item) state.cart.set(id, {item, qty: Math.max(1, qty|0)});
-        }
-        pulseBadge();
-      }catch(e){ console.warn('No se pudo cargar el carrito', e); }
-    }
 
-    window.addEventListener('storage', (ev)=>{ // sync entre pestañas
-      if(ev.key===STORAGE_KEY) { state.cart.clear(); loadCart(); updateCartUI(); }
-    });
+   // ===== Estado =====
+const state = {
+  cat: (typeof MENU!=='undefined' && MENU.length ? MENU[0].id : null),
+  cart: new Map(),
+  get total(){ let s=0; for(const {item,qty} of this.cart.values()) s += item.price*qty; return s; },
+  fmt(n){ return I18N.money(n); },
+  get lang(){ return I18N.get(); }, set lang(v){ I18N.set(v); }
+};
 
-    // Render de categorías
-// Render de categorías
-function catName(cat){
-  return (CAT_NAMES[state.lang] && CAT_NAMES[state.lang][cat.id]) || cat.name;
+// ===== Refs DOM =====
+const catsEl = document.getElementById('cats');
+const gridEl = document.getElementById('grid');
+const badgeEl = document.getElementById('badge');
+const drawer = document.getElementById('drawer');
+const backdrop = document.getElementById('backdrop');
+const fab = document.getElementById('fab');
+const closeDrawer = document.getElementById('closeDrawer');
+const itemsEl = document.getElementById('items');
+const subtEl = document.getElementById('subt');
+const totEl = document.getElementById('tot');
+const btnES = document.getElementById('btnES');
+const btnEN = document.getElementById('btnEN');
+const stitle = document.querySelector('.section-title');
+const cartTitle = document.getElementById('cartTitle');
+const shipLbl = document.getElementById('ship');
+const lblSubt = document.getElementById('lblSubt');
+const lblDelivery = document.getElementById('lblDelivery');
+const lblTotal = document.getElementById('lblTotal');
+const waBtn = document.getElementById('sendWA');
+const clearBtn = document.getElementById('clear');
+
+// ===== Persistencia =====
+const STORAGE_KEY='ml_cart_v1';
+function saveCart(){
+  const data=[...state.cart.values()].map(r=>({id:r.item.id,qty:r.qty}));
+  try{ localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); }catch{}
 }
-function renderCats(data){
-  const catsEl = document.getElementById('cats');
-  if (!catsEl) {
-    console.warn('No encontré #cats aún. Reintentando cuando cargue el DOM…');
-    document.addEventListener('DOMContentLoaded', () => renderCats(data), { once:true });
+function loadCart(){
+  try{
+    const raw=localStorage.getItem(STORAGE_KEY); if(!raw) return;
+    const arr=JSON.parse(raw)||[]; arr.forEach(({id,qty})=>{
+      const item = MENU.flatMap(c=>c.items).find(x=>x.id===id);
+      if(item) state.cart.set(id,{item,qty:Math.max(1,qty|0)});
+    });
+  }catch{}
+}
+
+// ===== Render =====
+function renderCats(){
+  catsEl.innerHTML = MENU.map(c => `
+    <button class="cat-btn pill-anim btn-anim ripple-wrap ${c.id===state.cat?'active':''}" data-cat="${c.id}">
+      ${CAT_NAMES[I18N.get()][c.id]}
+    </button>`).join('');
+  catsEl.querySelectorAll('button').forEach(b=>{
+    b.onclick = () => { state.cat = b.dataset.cat; renderCats(); renderGrid(); window.scrollTo({top:0,behavior:'smooth'}); };
+  });
+}
+
+function renderGrid(){
+  const gridEl = document.getElementById('grid');
+  const cat = MENU.find(c=>c.id===state.cat) || { id:state.cat, items:[] };
+
+  if (!cat.items.length) {
+    gridEl.innerHTML = `
+      <div class="card reveal" style="padding:18px; text-align:center">
+        <h3 style="margin:0 0 8px">${CAT_NAMES[I18N.get()][cat.id] || ''}</h3>
+        <p style="color:var(--muted)">No hay productos en esta categoría.</p>
+      </div>`;
+    attachReveal(gridEl);
     return;
   }
-  catsEl.innerHTML = '';
-  for (const c of MENU){
-    const b = document.createElement('button');
-    b.className = 'cat-btn' + (c.id === state.cat ? ' active' : '');
-    b.textContent = catName(c);
+
+  gridEl.innerHTML = cat.items.map(p => `
+    <article class="card card-anim reveal">
+      <img src="${p.img}" alt="${I18N.name(p)}">
+      <div class="info">
+        <h3>${I18N.name(p)}</h3>
+        <p class="muted">${CAT_NAMES[I18N.get()][cat.id]}</p>
+        <div class="row">
+          <div class="price">${I18N.money(p.price)}</div>
+          <button class="add btn-anim btn-glow ripple-wrap" data-id="${p.id}">
+            ${I18N.get()==='es' ? 'Agregar' : 'Add'}
+          </button>
+        </div>
+        <p style="margin-top:8px; color:var(--muted)">${I18N.desc(p)}</p>
+      </div>
+    </article>
+  `).join('');
+
+  // listeners "Add"
+  gridEl.querySelectorAll('button.add').forEach(b=>{
     b.onclick = () => {
-      state.cat = c.id;
-      renderCats();
-      renderGrid();
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+      const it = cat.items.find(x=>x.id===b.dataset.id);
+      addToCart(it);
+      const txt=b.textContent; b.disabled=true; b.textContent= I18N.get()==='es'?'✔ Agregado':'✔ Added';
+      setTimeout(()=>{ b.disabled=false; b.textContent=txt; }, 900);
     };
-    catsEl.appendChild(b);
-  }
+  });
+
+  attachReveal(gridEl);  // observa las nuevas cards .reveal
 }
 
-    // Render del grid según categoría
-    function renderGrid(){
-      const cat = MENU.find(x=>x.id===state.cat);
-      gridEl.innerHTML = '';
-      for(const item of cat.items){
-        const card = document.createElement('article');
-        card.className = 'card';
-        card.innerHTML = `
-          <img src="${item.img}" alt="${item.name}">
-          <div class="info">
-            <h3>${item.name}</h3>
-            <p>${catName(cat)}</p>
-            <div class="row">
-              <div class="price">${state.fmt(item.price)}</div>
-              <button class="add">${I18N[state.lang].add}</button>
-            </div>
-          </div>
-        `;
-        card.querySelector('.add').onclick = ()=> addToCart(item);
-        gridEl.appendChild(card);
-      }
+
+// ===== Carrito =====
+function addToCart(item){
+  const had = state.cart.get(item.id);
+  state.cart.set(item.id, {item, qty:(had?had.qty:0)+1});
+  pulseBadge(); updateCartUI();
+}
+function changeQty(id,delta){
+  const row = state.cart.get(id); if(!row) return;
+  row.qty += delta; if(row.qty<=0) state.cart.delete(id); else state.cart.set(id,row);
+  updateCartUI();
+}
+function clearCart(){ state.cart.clear(); updateCartUI(); }
+
+function pulseBadge(){
+  const totalQty=[...state.cart.values()].reduce((s,x)=>s+x.qty,0);
+  badgeEl.textContent = totalQty>99 ? '99+' : totalQty;
+  badgeEl.animate([{transform:'scale(1)'},{transform:'scale(1.2)'},{transform:'scale(1)'}],{duration:250});
+}
+
+function updateCartUI(){
+  const totalQty=[...state.cart.values()].reduce((s,x)=>s+x.qty,0);
+  badgeEl.textContent = totalQty>99 ? '99+' : totalQty;
+
+  itemsEl.innerHTML = '';
+  if(totalQty===0){
+    itemsEl.innerHTML = `<p style="opacity:.8; padding:10px">${I18N.text('cart_empty')}</p>`;
+  }else{
+    for(const {item,qty} of state.cart.values()){
+      const el=document.createElement('div');
+      el.className='ci';
+      el.innerHTML=`
+        <div>
+          <h4>${I18N.name(item)}</h4>
+          <div style="opacity:.75">${I18N.money(item.price)} · ${item.id}</div>
+        </div>
+        <div class="qty">
+          <button aria-label="Quitar 1">−</button>
+          <strong>${qty}</strong>
+          <button aria-label="Agregar 1">+</button>
+          <button title="Eliminar" style="margin-left:6px">🗑️</button>
+        </div>`;
+      const [btnMinus,btnPlus,btnTrash]=el.querySelectorAll('button');
+      btnMinus.onclick=()=>changeQty(item.id,-1);
+      btnPlus.onclick =()=>changeQty(item.id,+1);
+      btnTrash.onclick=()=>{ state.cart.delete(item.id); updateCartUI(); };
+      itemsEl.appendChild(el);
     }
+  }
+  subtEl.textContent = I18N.money(state.total);
+  totEl.textContent  = I18N.money(state.total);
+  saveCart();
+}
 
-    function addToCart(item){
-      const had = state.cart.get(item.id);
-      state.cart.set(item.id, {item, qty:(had?had.qty:0)+1});
-      pulseBadge();
-      updateCartUI();
-    }
-    function changeQty(id, delta){
-      const row = state.cart.get(id); if(!row) return;
-      row.qty += delta; if(row.qty<=0) state.cart.delete(id); else state.cart.set(id,row);
-      updateCartUI();
-    }
-    function clearCart(){ state.cart.clear(); updateCartUI(); }
+// ===== Drawer =====
+function openDrawer(){ drawer.classList.add('open'); drawer.setAttribute('aria-hidden','false'); }
+function closeDrawerFn(){ drawer.classList.remove('open'); drawer.setAttribute('aria-hidden','true'); }
+fab.onclick=openDrawer; backdrop.onclick=closeDrawerFn; closeDrawer.onclick=closeDrawerFn;
+clearBtn.onclick = clearCart;
 
-    // Badge anim y conteo
-    function pulseBadge(){
-      const totalQty = [...state.cart.values()].reduce((s,x)=>s+x.qty,0);
-      badgeEl.textContent = totalQty;
-      badgeEl.animate([{transform:'scale(1)'},{transform:'scale(1.2)'},{transform:'scale(1)'}],{duration:250});
-    }
+// ===== WhatsApp =====
+function buildWAMessage(){
+  if(state.cart.size===0) return I18N.text('hello');
+  const lines=[I18N.text('hello'), ''];
+  for(const {item,qty} of state.cart.values()){
+    lines.push(`• ${I18N.name(item)} x${qty} – ${I18N.money(item.price*qty)}`);
+  }
+  lines.push('', `${I18N.text('total')}: ${I18N.money(state.total)}`);
+  lines.push(`${I18N.text('delivery')}: *${I18N.text('ship_to_coord')}*`);
+  lines.push(I18N.get()==='es'?'Nombre y dirección:':'Name and address:');
+  return lines.join('\n');
+}
+document.getElementById('sendWA').onclick = () => {
+  const WA_PHONE = '13215664889';
+  const url = `https://wa.me/${WA_PHONE}?text=${encodeURIComponent(buildWAMessage())}`;
+  window.open(url,'_blank');
+};
 
-    // Render del drawer
-    function updateCartUI(){
-      const totalQty = [...state.cart.values()].reduce((s,x)=>s+x.qty,0);
-      badgeEl.textContent = totalQty;
+// ===== Aplicar textos UI por idioma =====
+function applyStaticTexts(){
+  stitle && (stitle.textContent = I18N.text('choose_category'));
+  cartTitle && (cartTitle.textContent = I18N.text('your_order'));
+  closeDrawer && (closeDrawer.textContent = I18N.text('close'));
+  shipLbl && (shipLbl.textContent = I18N.text('ship_to_coord'));
+  waBtn && (waBtn.textContent = I18N.text('sendWA'));
+  clearBtn && (clearBtn.textContent = I18N.text('clear'));
+  lblSubt && (lblSubt.textContent = I18N.text('subtotal'));
+  lblDelivery && (lblDelivery.textContent = I18N.text('delivery'));
+  lblTotal && (lblTotal.textContent = I18N.text('total'));
+}
 
-      itemsEl.innerHTML = '';
-      if(totalQty===0){
-        itemsEl.innerHTML = `<p style="opacity:.8; padding:10px">${I18N[state.lang].cart_empty}</p>`;
-      } else {
-        for(const {item, qty} of state.cart.values()){
-          const el = document.createElement('div');
-          el.className = 'ci';
-          el.innerHTML = `
-            <div>
-              <h4>${item.name}</h4>
-              <div style="opacity:.75">${state.fmt(item.price)} · ${item.id}</div>
-            </div>
-            <div class="qty">
-              <button aria-label="Quitar 1">−</button>
-              <strong>${qty}</strong>
-              <button aria-label="Agregar 1">+</button>
-              <button title="Eliminar" style="margin-left:6px">🗑️</button>
-            </div>`;
-          const [btnMinus, btnPlus, btnTrash] = el.querySelectorAll('button');
-          // fallback safety by if-checks (avoid silent JS errors)
-          if(!btnMinus || !btnPlus || !btnTrash){
-            console.warn('Esperaba 3 botones en la fila del carrito, algo no coincidió.');
-          }
-          btnMinus.onclick = ()=> changeQty(item.id, -1);
-          btnPlus.onclick  = ()=> changeQty(item.id, +1);
-          btnTrash.onclick = ()=> { state.cart.delete(item.id); updateCartUI(); };
-          itemsEl.appendChild(el);
-        }
-      }
-      subtEl.textContent = state.fmt(state.total);
-      totEl.textContent  = state.fmt(state.total); // aquí podrías sumar delivery
-      saveCart();
-    }
+// ===== Listeners de idioma =====
+btnES?.addEventListener('click', ()=>{ state.lang='es'; applyStaticTexts(); renderCats(); renderGrid(); });
+btnEN?.addEventListener('click', ()=>{ state.lang='en'; applyStaticTexts(); renderCats(); renderGrid(); });
 
-    // Drawer open/close
-    function openDrawer(){ drawer.classList.add('open'); drawer.setAttribute('aria-hidden','false'); }
-    function closeDrawerFn(){ drawer.classList.remove('open'); drawer.setAttribute('aria-hidden','true'); }
-    fab.onclick = openDrawer; backdrop.onclick = closeDrawerFn; closeDrawer.onclick = closeDrawerFn;
-    clearBtn.onclick = ()=>{ clearCart(); };
+// ===== Init =====
+loadCart();
+applyStaticTexts();
+renderCats();
+renderGrid();
+updateCartUI();
 
-    // WhatsApp compose
-    function t(k){ return (I18N[state.lang] && I18N[state.lang][k]) || k; }
-    function buildWAMessage(){
-      if(state.cart.size===0) return 'Hola Maestro Lee! Quiero hacer un pedido vacío (probando el sistema).';
-      const lines = [];
-      lines.push(t('hello'));
-      lines.push('');
-      for(const {item, qty} of state.cart.values()){
-        lines.push(`• ${item.name} x${qty} – ${state.fmt(item.price*qty)}`);
-      }
-      lines.push('');
-      lines.push(`${t('total')}: ${state.fmt(state.total)}`);
-      lines.push(`${t('delivery')}: *${t('ship_to_coord')}*`);
-      lines.push('Nombre y dirección: ');
-      return lines.join('\n');
-    }
-
-    function sendWA(){
-      const rawPhone = WA_PHONE;
-      const msg = encodeURIComponent(buildWAMessage());
-      const url = `https://wa.me/${rawPhone}?text=${msg}`;
-      window.open(url, '_blank');
-    }
-    waBtn.onclick = sendWA;
-
-    // Init
-    loadCart();
-    renderCats();
-    renderGrid();
-    updateCartUI();
-    // aplicar idioma guardado
-    try{ (function(){
-      const lang = state.lang;
-      // set initial UI texts
-      const st = document.querySelector('.section-title'); if(st){ st.textContent = I18N[lang].choose_category; }
-      const ct = document.getElementById('cartTitle'); if(ct){ ct.textContent = I18N[lang].your_order; }
-      const cd = document.getElementById('closeDrawer'); if(cd){ cd.textContent = I18N[lang].close; }
-      const ship = document.getElementById('ship'); if(ship){ ship.textContent = I18N[lang].ship_to_coord; }
-      const sWA = document.getElementById('sendWA'); if(sWA){ sWA.textContent = I18N[lang].sendWA; }
-      const clr = document.getElementById('clear'); if(clr){ clr.textContent = I18N[lang].clear; }
-      const lbS = document.getElementById('lblSubt'); if(lbS){ lbS.textContent = I18N[lang].subtotal; }
-      const lbD = document.getElementById('lblDelivery'); if(lbD){ lbD.textContent = I18N[lang].delivery; }
-      const lbT = document.getElementById('lblTotal'); if(lbT){ lbT.textContent = I18N[lang].total; }
-    })(); }catch{}
-
-    // listeners idioma
-    const _btnES = document.getElementById('btnES'); const _btnEN = document.getElementById('btnEN');
-    if(_btnES){ _btnES.onclick = ()=>{ state.lang='es'; localStorage.setItem('ml_lang','es'); location.reload(); }; }
-    if(_btnEN){ _btnEN.onclick = ()=>{ state.lang='en'; localStorage.setItem('ml_lang','en'); location.reload(); }; }
+ 
   </script>
   <script>
  document.addEventListener('click', (e)=>{
@@ -620,15 +764,27 @@ function renderCats(data){
       onScroll(); window.addEventListener('scroll', onScroll, {passive:true});
     })();
     
-    /* Scroll reveal con IntersectionObserver */
-    (function(){
-      const els = document.querySelectorAll('.reveal');
-      if(!els.length) return;
-      const io = new IntersectionObserver((entries)=>{
-        entries.forEach(e => { if(e.isIntersecting){ e.target.classList.add('is-in'); io.unobserve(e.target); }});
-      }, { threshold: .12, rootMargin: '0px 0px -10% 0px' });
-      els.forEach(el => io.observe(el));
-    })();
+ // Scroll reveal reutilizable para contenido dinámico
+(function () {
+  const opts = { threshold: .12, rootMargin: '0px 0px -10% 0px' };
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('is-in');
+        io.unobserve(e.target);
+      }
+    });
+  }, opts);
+
+  // función global para observar nuevos nodos .reveal
+  window.attachReveal = function attachReveal(root = document) {
+    root.querySelectorAll('.reveal:not(.is-in)').forEach(el => io.observe(el));
+  };
+
+  // primera pasada (lo que ya existe en el DOM)
+  attachReveal(document);
+})();
+
     
     /* Ripple en botones con clase .ripple-wrap */
     (function(){
