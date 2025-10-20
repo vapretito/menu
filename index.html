@@ -265,6 +265,21 @@ header::after{
 .cta-ghost{ background:transparent; color:#fff; }
 .cta-ghost:hover{ background:color-mix(in oklab, var(--gold), transparent 82%); }
 
+
+/* Logo con fondo blanco en la navbar */
+.top .brand-mini .nav-logo{
+  width:36px; height:36px;               /* ajustá si lo querés más grande */
+  background:#fff;                        /* fondo blanco */
+  border-radius:50%;                      /* disco */
+  padding:6px;                            /* aire alrededor del logo */
+  border:2px solid var(--gold);           /* borde dorado como el resto */
+  box-shadow:0 2px 8px rgba(0,0,0,.25);   /* leve sombra para contraste */
+  object-fit:contain;
+}
+
+
+
+
   </style>
   
 </head>
@@ -286,8 +301,8 @@ header::after{
 <nav class="top">
   <div class="wrap">
     <div class="brand-mini">
-      <img src="img/maestro-lee-logo.png" alt="Maestro Lee" />
-      <div id="brandText"><strong>Menú</strong></div>
+      <img class="nav-logo" src="img/maestro-lee-logo.png" alt="Maestro Lee" />
+      <div id="brandText"><strong>Menu</strong></div>
 
       
 
