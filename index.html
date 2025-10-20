@@ -315,12 +315,14 @@ header.hero{
   padding:10px; margin-bottom:16px;
   filter:none; /* mantiene el logo claro */
 }
+/* Evita viudas/orfandad y reparte mejor las líneas del título */
 .hero-title{
-  margin:0 0 8px;
-  font-size:clamp(1.9rem, 5.2vw, 3.2rem);
-  letter-spacing:1px; color:var(--gold);
-  text-shadow:0 3px 10px rgba(0,0,0,.6);
+  text-wrap: balance;         /* soportado en iOS/Chrome modernos */
+  max-width: 18ch;            /* limita el ancho para cortes más lindos */
+  margin-left:auto; margin-right:auto;
+  word-break: normal; white-space: normal;
 }
+
 .hero-tag{
   margin:0 0 18px; font-size:clamp(1rem, 2.2vw, 1.25rem);
   opacity:.95; text-shadow:0 2px 8px rgba(0,0,0,.55);
