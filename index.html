@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Maestro Lee</title>
   <meta name="description" content="Maestro Lee" />
+  
   <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@500;700&display=swap" rel="stylesheet">
 
   <link rel="icon" href="img/maestro-lee-logo.png" type="image/png" />
@@ -19,10 +20,11 @@
     *{box-sizing:border-box}
     html,body{
   margin:0;
-  font-family:"Noto Serif SC", "Microsoft YaHei", "PingFang SC", serif;
+  font-family:"Noto Serif SC","Microsoft YaHei","PingFang SC",serif;
   background:var(--bg);
   color:var(--text);
 }
+
     a, a:visited{color:inherit}
   
     /* ===== Header + Marca ===== */
@@ -79,22 +81,26 @@ header::after{
 }
     /* ===== Navbar ===== */
     nav.top{
-      background:#111827;
-      border-bottom:3px solid var(--gold);
-      position: sticky; top:0; z-index:80; /* debajo del drawer */
-    }
-    nav.top .wrap{
-      max-width:1100px; margin:auto;
-      padding:10px 16px; display:flex; gap:14px; align-items:center; justify-content:space-between;
-    }
-    .brand-mini{display:flex; gap:10px; align-items:center; color:#fff}
-    .brand-mini img{width:28px; height:28px; border-radius:50%; border:1px solid var(--gold)}
-    .brand-mini strong{color:var(--gold)}
-    .phone-pill{display:none !important}
-    .phone-pill input{width:150px; padding:6px 10px; border-radius:10px; border:1px solid #374151; background:#111827; color:#e5e7eb}
-    .lang-pill{display:flex; gap:6px; align-items:center}
-    .lang-pill .lang{padding:6px 10px; border-radius:999px; border:1px solid var(--gold); background:#111827; color:#f3f4f6; cursor:pointer; font-weight:700}
-    .lang-pill .lang.active{background:var(--gold); color:#111827}
+  position:sticky; top:0; z-index:120;
+  background:transparent;                 /* transparente sobre el hero */
+  border-bottom:none;
+  transition:background .25s ease, box-shadow .25s ease;
+}
+.top .wrap{
+  max-width:1100px; margin:auto;
+  padding:12px 16px; display:flex; gap:14px; align-items:center; justify-content:space-between;
+}
+.top .brand-mini{color:#fff}
+.top .brand-mini img{width:32px; height:32px; border-radius:50%; border:1px solid var(--gold)}
+.top .brand-mini strong{color:var(--gold)}
+.top .lang-pill .lang{background:transparent; border-color:var(--gold); color:#fff}
+.top .lang-pill .lang.active{background:var(--gold); color:#111827}
+
+/* al scrollear: fondo sólido tipo sitio de referencia */
+.top.scrolled{
+  background:#111827; box-shadow:0 6px 22px rgba(0,0,0,.28);
+  border-bottom:3px solid var(--gold);
+}
   
     /* ===== Main ===== */
     main{max-width:1100px; margin:auto; padding:24px 16px 120px}
@@ -191,17 +197,64 @@ header::after{
 
 
     .fab{ overflow: visible; }
+/* ===== Hero / Banner ===== */
+.hero{
+  position:relative;
+  min-height:56vh;
+  background:url('img/hero-maestro-lee.jpg') center/cover no-repeat; /* poné tu foto acá */
+  display:grid; place-items:center;
+  border-bottom:4px solid var(--gold);
+}
+.hero .overlay{
+  position:absolute; inset:0;
+  background:linear-gradient(180deg, rgba(0,0,0,.45), rgba(0,0,0,.45));
+}
+.hero-content{
+  position:relative; z-index:1; text-align:center; color:#fff;
+  padding:48px 16px; max-width:900px;
+}
+.hero-logo{
+  width:110px; height:110px; object-fit:contain;
+  background:#ffffff; border-radius:50%;
+  border:3px solid var(--gold);
+  box-shadow:0 8px 30px rgba(0,0,0,.35);
+  padding:10px; margin-bottom:16px;
+  filter:none; /* mantiene el logo claro */
+}
+.hero-title{
+  margin:0 0 8px;
+  font-size:clamp(1.9rem, 5.2vw, 3.2rem);
+  letter-spacing:1px; color:var(--gold);
+  text-shadow:0 3px 10px rgba(0,0,0,.6);
+}
+.hero-tag{
+  margin:0 0 18px; font-size:clamp(1rem, 2.2vw, 1.25rem);
+  opacity:.95; text-shadow:0 2px 8px rgba(0,0,0,.55);
+}
+.hero-ctas{ display:flex; gap:12px; justify-content:center; flex-wrap:wrap; }
+
+.cta{
+  display:inline-block; padding:12px 18px; font-weight:800; border-radius:999px;
+  border:2px solid var(--gold); cursor:pointer; text-decoration:none;
+  transition:transform .15s ease, box-shadow .2s ease, background-color .2s ease, color .2s ease;
+}
+.cta:active{ transform:scale(.98); }
+.cta-primary{ background:var(--gold); color:#111827; }
+.cta-ghost{ background:transparent; color:#fff; }
+.cta-ghost:hover{ background:color-mix(in oklab, var(--gold), transparent 82%); }
 
   </style>
   
 </head>
 <body>
-  <header>
-    <div class="brand-row">
-      <img src="img/maestro-lee-logo.png" alt="Maestro Lee — Comida China" class="logo-xl">
-      <div class="brand-text">
-        <h1>Maestro Lee</h1>
-        <p id="tagline">Comida china hecha por manos venezolanas</p>
+  <header class="hero">
+    <div class="overlay"></div>
+    <div class="hero-content">
+      <img class="hero-logo" src="img/maestro-lee-logo.png" alt="Maestro Lee" />
+      <h1 class="hero-title">Comida china con sabor venezolano</h1>
+      <p class="hero-tag">Hecha en casa · Caliente · Abundante</p>
+      <div class="hero-ctas">
+        <a href="#cats" class="cta cta-primary">Ver menú</a>
       </div>
     </div>
   </header>
@@ -214,10 +267,7 @@ header::after{
       <img src="img/maestro-lee-logo.png" alt="Maestro Lee" />
       <div id="brandText"><strong>Menú</strong></div>
 
-      <div class="phone-pill">
-        WhatsApp: +
-        <input id="waPhone" ... />
-      </div>
+      
 
       <div class="lang-pill" role="group" aria-label="Idioma">
         <!-- + animaciones -->
