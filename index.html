@@ -11,39 +11,59 @@
   <link rel="icon" href="img/maestro-lee-logo.png" type="image/png" />
   <style>
     :root{
-      --bg:#fff8f0; --panel:#ffffff; --brand:#b22222; --brand-dark:#8b0000; --gold:#ffd700; --text:#222;
-      --muted:#6b7280; --border:#f1d87a; --shadow: 0 10px 30px rgba(0,0,0,.15);
-      --radius:14px;
-    }
+  --paper:#fbfaf7;            /* papel de arroz claro */
+  --ink:#1a1b1e;              /* tinta/charcoal */
+  --brand:#2b2c30;            /* dejamos un “brand” oscuro */
+  --brand-dark:#17181b;
+  --gold:#d6b86a;             /* dorado más suave */
+  --text:#222;
+  --muted:#6b7280;
+  --border:#e9dfb2;
+  --shadow:0 10px 30px rgba(0,0,0,.15);
+  --radius:14px;
+}
+
   
     /* ===== Base ===== */
     *{box-sizing:border-box}
     html,body{
   margin:0;
   font-family:"Noto Serif SC","Microsoft YaHei","PingFang SC",serif;
-  background:var(--bg);
+  background: var(--paper);
   color:var(--text);
 }
+
 
     a, a:visited{color:inherit}
   
     /* ===== Header + Marca ===== */
     header{
   position: relative;
-  background: url('img/banner-chino.jpg') center/cover no-repeat;
   color: var(--gold);
   text-align: center;
   padding: 80px 16px;
   border-bottom: 4px solid var(--gold);
-  box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+  box-shadow: 0 10px 25px rgba(0,0,0,.42);
+
+  /* FOTO + PATRÓN "SEIGAIHA" + DEGRADADO */
+  background:
+  url('img/banner-chino.jpg') center/cover no-repeat,
+  url('img/pat-seigaiha.svg') repeat,
+  linear-gradient(180deg, rgba(0,0,0,.22), rgba(0,0,0,.45));
+background-blend-mode: multiply, normal, normal;
+
 }
+
+/* aseguremos que el texto quede por encima */
+header > * { position: relative; z-index: 1; }
 
 header::after{
   content:'';
   position:absolute;
   inset:0;
-  background:#A92020;
+  background: rgba(169, 32, 32, .45); /* 45% de opacidad */
 }
+
 .brand-row{
   position:relative;
   z-index:1;
@@ -79,6 +99,7 @@ header::after{
   color:rgba(243, 227, 7, 0.459);
   text-shadow:0 1px 4px rgba(0,0,0,0.7);
 }
+
     /* ===== Navbar ===== */
     nav.top{
   position:sticky; top:0; z-index:120;
@@ -201,10 +222,11 @@ header::after{
 .hero{
   position:relative;
   min-height:56vh;
-  background:url('img/hero-maestro-lee.jpg') center/cover no-repeat; /* poné tu foto acá */
+  background:url('img/hero-maestro-lee.png') center/cover no-repeat; /* poné tu foto acá */
   display:grid; place-items:center;
   border-bottom:4px solid var(--gold);
 }
+
 .hero .overlay{
   position:absolute; inset:0;
   background:linear-gradient(180deg, rgba(0,0,0,.45), rgba(0,0,0,.45));
@@ -254,7 +276,7 @@ header::after{
       <h1 class="hero-title">Comida china con sabor venezolano</h1>
       <p class="hero-tag">Hecha en casa · Caliente · Abundante</p>
       <div class="hero-ctas">
-        <a href="#cats" class="cta cta-primary">Ver menú</a>
+        <a href="#cats" class="cta cta-primary">Menu</a>
       </div>
     </div>
   </header>
