@@ -505,26 +505,22 @@ html, body{
 /* 💥 FIX: que el logo no tape la primera categoría en mobile */
 @media (max-width: 820px){
   .nav-cats{
-    display: flex;
-    align-items: center;
-    gap: 8px;
+    display: block;          /* en columna */
     width: 100%;
   }
 
-  /* el logo: tamaño fijo a la izquierda */
   .nav-cats .brand-mini{
-    flex: 0 0 auto;
+    margin-bottom: 6px;      /* separo del carrusel */
   }
 
-  /* las categorías: ocupan TODO lo demás y scrollean */
   .nav-cats .cats{
-    flex: 1 1 auto;
     display: flex;
     flex-wrap: nowrap;
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
     gap: 10px;
-    padding: 6px 14px 10px;
+    padding: 6px 14px 10px;  /* empieza desde la izquierda */
+    width: 100%;
     scrollbar-width: none;
   }
   .nav-cats .cats::-webkit-scrollbar{
