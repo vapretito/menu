@@ -411,6 +411,40 @@ header.hero{
   background: rgba(246,214,138,.08);
   border-color: rgba(246,214,138,.5);
 }
+/* --- desktop / normal --- */
+.nav-cats .cats{
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+  justify-content:center;
+}
+
+/* --- mobile --- */
+@media (max-width: 820px){
+  .nav-cats{
+    width:100%;
+  }
+
+  .nav-cats .cats{
+    display:flex;
+    flex-wrap:nowrap;          /* todas en una sola fila */
+    overflow-x:auto;           /* scroll lateral */
+    gap:10px;
+    padding:6px 4px 10px;
+    scrollbar-width:none;      /* firefox: ocultar barra */
+  }
+  .nav-cats .cats::-webkit-scrollbar{
+    display:none;              /* chrome: ocultar barra */
+  }
+
+  .nav-cats .cat-btn{
+    white-space:nowrap;        /* que no se parta “Carne de Res” */
+    flex:0 0 auto;             /* que no se achiquen */
+  }
+  .nav-cats .cats{
+  padding:6px 12px 10px;
+}
+}
 
   </style>
   
@@ -449,6 +483,11 @@ header.hero{
   </div>
 </nav>
 
+<main>
+  <h2 class="section-title">Elige tu categoría</h2>
+  <div id="cats" class="cats"></div>
+  <div id="grid" class="grid" aria-live="polite"></div>
+</main>
 
 
 <!-- FAB carrito -->
