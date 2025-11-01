@@ -938,8 +938,10 @@ const state = {
 };
 
 // ===== Refs DOM =====
-const catsEl = document.getElementById('cats');
-const gridEl = document.getElementById('grid');
+const catsEls = [
+  document.getElementById('cats'),
+  document.getElementById('cats-bottom')
+].filter(Boolean);const gridEl = document.getElementById('grid');
 const badgeEl = document.getElementById('badge');
 const drawer = document.getElementById('drawer');
 const backdrop = document.getElementById('backdrop');
@@ -977,24 +979,35 @@ function loadCart(){
 
 // ===== Render =====
 function renderCats(){
-  catsEl.innerHTML = MENU.map(c => `
+  const html = MENU.map(c => `
     <button class="cat-btn pill-anim btn-anim ripple-wrap ${c.id===state.cat?'active':''}" data-cat="${c.id}">
       ${CAT_NAMES[I18N.get()][c.id]}
     </button>`).join('');
 
-  catsEl.querySelectorAll('button').forEach(b=>{
-    b.onclick = () => {
-      state.cat = b.dataset.cat;
-      renderCats();
-      renderGrid();
+  // pintar en TODOS los contenedores de categorías
+  catsEls.forEach(el => {
+    el.innerHTML = html;
+    el.querySelectorAll('button').forEach(b=>{
+      b.onclick = () => {
+        state.cat = b.dataset.cat;
+        renderCats();
+        renderGrid();
 
-      // 👇 scroll a las categorías con offset por el navbar
-      const topBarH = document.querySelector('.top')?.offsetHeight || 0;
-      const y = catsEl.getBoundingClientRect().top + window.scrollY - (topBarH + 12);
-      window.scrollTo({ top: y, behavior: 'smooth' });
-    };
+        // si es el bottom el que toqué, NO me subas al top
+        if (el.id === 'cats-bottom') {
+          return;
+        }
+
+        // si es el de arriba y querés que baje al grid:
+        const grid = document.getElementById('grid');
+        const topBarH = document.querySelector('.top')?.offsetHeight || 0;
+        const y = grid.getBoundingClientRect().top + window.scrollY - (topBarH + 8);
+        window.scrollTo({ top: y, behavior: 'smooth' });
+      };
+    });
   });
 }
+
 
 
 function renderGrid(){
