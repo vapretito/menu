@@ -478,6 +478,38 @@ header.hero{
 html, body{
   overflow-x: hidden;
 }
+/* que el wrap del nav permita otra fila */
+nav.top .wrap{
+  display: flex;
+  flex-wrap: wrap;     /* 👈 ESTA es la clave */
+  gap: 10px 14px;
+}
+
+/* el logo va primero */
+nav.top .wrap .brand-mini{
+  order: 1;
+}
+
+/* las categorías del nav van ABAJO y ocupan todo el ancho */
+nav.top .wrap #cats{
+  order: 2;
+  width: 100%;
+  display: flex;
+  gap: 10px;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  padding-bottom: 6px;
+}
+nav.top .wrap #cats::-webkit-scrollbar{
+  display: none;
+}
+
+/* que los chips no se rompan */
+nav.top .wrap #cats .cat-btn{
+  white-space: nowrap;
+  flex: 0 0 auto;
+}
 
 /* el nav NO debe recortar el contenido */
 /* 💥 FIX: que el logo no tape la primera categoría en mobile */
