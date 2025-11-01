@@ -446,6 +446,58 @@ header.hero{
 }
 }
 
+/* contenedor flotante */
+.lang-fab{
+  position: fixed;
+  top: 14px;
+  right: 14px;
+  display: flex;
+  gap: 8px;
+  z-index: 300;      /* más que el nav */
+}
+
+/* botón base */
+.langfab{
+  background: rgba(8,11,16,.95);
+  color: #fff;
+  border: 1px solid rgba(246,214,138,.45);
+  border-radius: 999px;
+  padding: 6px 12px 6px;
+  font-size: .75rem;
+  font-weight: 600;
+  cursor: pointer;
+  backdrop-filter: blur(6px);
+  transition: transform .12s ease, background .12s ease;
+}
+.langfab:hover{
+  transform: translateY(-2px);
+}
+
+/* el no seleccionado */
+.langfab.ghost{
+  background: rgba(8,11,16,.25);
+  border: 1px solid rgba(246,214,138,.15);
+  color: #fff;
+}
+
+/* mobile: bajar un poquito para no tapar el nav */
+@media (max-width: 820px){
+  .lang-fab{
+    top: 68px;     /* porque el nav fijo queda arriba */
+    right: 10px;
+  }
+}
+.langfab.active{
+  background: rgba(246,214,138,1);
+  color: #0b0c0f;
+  border-color: rgba(246,214,138,1);
+}
+
+.lang-fab{
+  right: auto;
+  left: 14px;
+}
+
   </style>
   
 </head>
@@ -474,11 +526,6 @@ header.hero{
     <!-- 👇 NUEVO: contenedor para las categorías en el navbar -->
     <div class="nav-cats">
       <div id="cats" class="cats"></div>
-    </div>
-
-    <div class="lang-pill" role="group" aria-label="Idioma">
-      <button id="btnES" class="lang btn-anim ripple-wrap btn-glow">Español 🇪🇸</button>
-      <button id="btnEN" class="lang btn-anim ripple-wrap">English 🇺🇸</button>
     </div>
   </div>
 </nav>
@@ -558,6 +605,11 @@ header.hero{
   <!-- Script oficial de Instagram (una sola vez en la página) -->
   <script async src="https://www.instagram.com/embed.js"></script>
   
+<!-- botones de idioma flotantes -->
+<div class="lang-fab" aria-label="Cambiar idioma">
+  <button id="btnES" class="langfab">ES</button>
+  <button id="btnEN" class="langfab ghost">EN</button>
+</div>
 
   <footer>
     <p>&copy; 2025 Maestro Lee. Todos los derechos reservados. <a href="https://instagram.com/maes.trolee" target="_blank" rel="noopener">@maes.trolee</a></p>
@@ -1104,6 +1156,16 @@ updateCartUI();
     
     /* Touch-friendly : activa hover sutil en mobile al tocar */
     document.addEventListener('touchstart', ()=>{}, {passive:true});
+
+
+
+
+
+    function setLangUI(lang){
+  document.getElementById('btnES').classList.toggle('active', lang === 'es');
+  document.getElementById('btnEN').classList.toggle('active', lang === 'en');
+}
+
     </script>
     
 </body>
