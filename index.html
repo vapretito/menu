@@ -496,7 +496,7 @@ nav.top .wrap #cats{
   width: 100%;
   display: flex;
   gap: 10px;
-  overflow-x: visible;
+  overflow-x: auto;
   -webkit-overflow-scrolling: touch;
   scrollbar-width: none;
   padding-bottom: 6px;
@@ -526,7 +526,7 @@ nav.top .wrap #cats .cat-btn{
   .nav-cats .cats{
     display: flex;
     flex-wrap: nowrap;
-    overflow-x: visible;
+    overflow-x: auto;
     -webkit-overflow-scrolling: touch;
     gap: 10px;
     padding: 6px 14px 10px;  /* empieza desde la izquierda */
@@ -570,10 +570,10 @@ nav.top .wrap #cats .cat-btn{
 
     <!-- 👇 NUEVO: contenedor para las categorías en el navbar -->
     <div class="nav-cats">
-      <div class="brand-mini">
-        <!-- <img class="nav-logo" src="img/maestro-lee-logo.png" alt="Maestro Lee" /> -->
+      <!-- <div class="brand-mini">
+        <img class="nav-logo" src="img/maestro-lee-logo.png" alt="Maestro Lee" />
         <div id="brandText"><strong>Menu</strong></div>
-      </div>
+      </div> -->
       <div id="cats" class="cats"></div>
     </div>
   </div>
