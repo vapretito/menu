@@ -394,6 +394,23 @@ header.hero{
 #grid .card .price{
   color: #fff;   /* porque tu fondo ya no es claro */
 }
+#cats,
+#grid{
+  scroll-margin-top: 90px;   /* ajustá a gusto: 80, 96, 104... */
+}
+
+
+/* color de las letras de las categorías en el NAV */
+.nav-cats .cat-btn{
+  color: #fff;                 /* ← acá el color que quieras */
+}
+
+/* cuando está activa (la que tiene la categoría seleccionada) */
+.nav-cats .cat-btn.active{
+  color: #f6d68a;              /* doradito */
+  background: rgba(246,214,138,.08);
+  border-color: rgba(246,214,138,.5);
+}
 
   </style>
   
@@ -418,22 +435,21 @@ header.hero{
     <div class="brand-mini">
       <img class="nav-logo" src="img/maestro-lee-logo.png" alt="Maestro Lee" />
       <div id="brandText"><strong>Menu</strong></div>
+    </div>
 
-      
+    <!-- 👇 NUEVO: contenedor para las categorías en el navbar -->
+    <div class="nav-cats">
+      <div id="cats" class="cats"></div>
+    </div>
 
-      <div class="lang-pill" role="group" aria-label="Idioma">
-        <!-- + animaciones -->
-        <button id="btnES" class="lang btn-anim ripple-wrap btn-glow">Español 🇪🇸</button>
-        <button id="btnEN" class="lang btn-anim ripple-wrap">English 🇺🇸 </button>
-      </div>
+    <div class="lang-pill" role="group" aria-label="Idioma">
+      <button id="btnES" class="lang btn-anim ripple-wrap btn-glow">Español 🇪🇸</button>
+      <button id="btnEN" class="lang btn-anim ripple-wrap">English 🇺🇸</button>
     </div>
   </div>
 </nav>
-<main>
-  <h2 class="section-title">Elige tu categoría</h2>
-  <div id="cats" class="cats"></div>
-  <div id="grid" class="grid" aria-live="polite"></div>
-</main>
+
+
 
 <!-- FAB carrito -->
 <button id="fab" class="fab btn-anim btn-glow ripple-wrap" aria-label="Abrir carrito" title="Carrito">
@@ -825,10 +841,21 @@ function renderCats(){
     <button class="cat-btn pill-anim btn-anim ripple-wrap ${c.id===state.cat?'active':''}" data-cat="${c.id}">
       ${CAT_NAMES[I18N.get()][c.id]}
     </button>`).join('');
+
   catsEl.querySelectorAll('button').forEach(b=>{
-    b.onclick = () => { state.cat = b.dataset.cat; renderCats(); renderGrid(); window.scrollTo({top:0,behavior:'smooth'}); };
+    b.onclick = () => {
+      state.cat = b.dataset.cat;
+      renderCats();
+      renderGrid();
+
+      // 👇 scroll a las categorías con offset por el navbar
+      const topBarH = document.querySelector('.top')?.offsetHeight || 0;
+      const y = catsEl.getBoundingClientRect().top + window.scrollY - (topBarH + 12);
+      window.scrollTo({ top: y, behavior: 'smooth' });
+    };
   });
 }
+
 
 function renderGrid(){
   const gridEl = document.getElementById('grid');
