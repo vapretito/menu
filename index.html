@@ -11,7 +11,7 @@
   <link rel="icon" href="img/maestro-lee-logo.png" type="image/png" />
   <style>
     :root{
-  --paper:#fbfaf7;            /* papel de arroz claro */
+  --paper:#bd868641;            /* papel de arroz claro */
   --ink:#1a1b1e;              /* tinta/charcoal */
   --brand:#2b2c30;            /* dejamos un “brand” oscuro */
   --brand-dark:#17181b;
@@ -102,11 +102,16 @@ header::after{
 
     /* ===== Navbar ===== */
     nav.top{
-  position:sticky; top:0; z-index:120;
-  background:transparent;                 /* transparente sobre el hero */
-  border-bottom:none;
-  transition:background .25s ease, box-shadow .25s ease;
+  position:sticky;
+  top:0;
+  z-index:120;
+  background: rgba(11,12,15,.96);      /* fondo oscuro siempre */
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(214,184,106,.25);
+  transition: background .25s ease, box-shadow .25s ease;
 }
+
+
 .top .wrap{
   max-width:1100px; margin:auto;
   padding:12px 16px; display:flex; gap:14px; align-items:center; justify-content:space-between;
@@ -119,9 +124,11 @@ header::after{
 
 /* al scrollear: fondo sólido tipo sitio de referencia */
 .top.scrolled{
-  background:#111827; box-shadow:0 6px 22px rgba(0,0,0,.28);
-  border-bottom:3px solid var(--gold);
+  background: #0c0d11;
+  box-shadow: 0 6px 22px rgba(0,0,0,.28);
+  border-bottom: 3px solid var(--gold);
 }
+
   
     /* ===== Main ===== */
     main{max-width:1100px; margin:auto; padding:24px 16px 120px}
@@ -354,6 +361,38 @@ header.hero{
   .hero-logo{ width:110px; height:110px; margin-bottom: 6px; }
   .hero-ctas .cta{ padding:10px 18px; }
   .hero-tag{ margin-bottom: 8px; }
+}
+#instagram{
+  max-width:1100px;
+  margin:56px auto 32px;
+  padding:28px 20px 32px;
+  background: rgb(255, 255, 255);
+  backdrop-filter: blur(6px);
+  border: 1px solid rgba(214,184,106,.35);
+  border-radius: 18px;
+  box-shadow: 0 12px 34px rgba(0,0,0,.08);
+}
+#instagram .ig-grid{
+  margin-top: 18px;
+}
+
+/* SOLO las cartas del menú de comidas */
+#grid .card{
+  background: rgba(13,14,18,.95);     /* fondo más oscuro */
+  border: 2px solid rgba(214,184,106,.4);  /* tu dorado pero más suave */
+  backdrop-filter: blur(3px);
+}
+
+#grid .card h3{
+  color: #fff;
+}
+
+#grid .card p{
+  color: rgba(233,240,255,.65);
+}
+
+#grid .card .price{
+  color: #fff;   /* porque tu fondo ya no es claro */
 }
 
   </style>
