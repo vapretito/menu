@@ -379,11 +379,12 @@ header.hero{
   .hero-ctas .cta{ padding:10px 18px; }
   .hero-tag{ margin-bottom: 8px; }
 }
+/* desktop queda como lo tenés */
 #instagram{
   max-width:1100px;
   margin:56px auto 32px;
   padding:28px 20px 32px;
-  background: rgb(255, 255, 255);
+  background:#fff;
   backdrop-filter: blur(6px);
   border: 1px solid rgba(214,184,106,.35);
   border-radius: 18px;
@@ -391,6 +392,37 @@ header.hero{
 }
 #instagram .ig-grid{
   margin-top: 18px;
+}
+
+/* --- mobile: estilo feed --- */
+@media (max-width: 768px){
+  #instagram{
+    margin: 32px auto;
+    padding: 16px 10px 24px;
+  }
+
+  #instagram .ig-grid{
+    display: grid;
+    grid-template-columns: repeat(3, minmax(90px, 1fr)); /* 3 por fila */
+    gap: 10px;
+  }
+
+  /* los embeds de IG traen width fijo, lo pisamos */
+  #instagram .instagram-media{
+    max-width: 100% !important;
+    width: 100% !important;
+    min-height: 140px;          /* para que no colapse mientras carga */
+    margin: 0 !important;
+    transform: scale(.95);      /* opcional: un pelín más chica */
+    transform-origin: top left;
+  }
+}
+
+/* si el celu es MUY chico → 2 columnas */
+@media (max-width: 480px){
+  #instagram .ig-grid{
+    grid-template-columns: repeat(2, minmax(120px, 1fr));
+  }
 }
 
 /* SOLO las cartas del menú de comidas */
