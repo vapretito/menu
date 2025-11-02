@@ -482,33 +482,32 @@ html, body{
 nav.top .wrap{
   max-width:1100px;
   margin:auto;
-  padding:12px 0 4px;    /* 👈 quito el padding-left que te corría el primer botón */
-  display:block;         /* 👈 en mobile lo queremos en columna */
+  padding:8px 0 6px;
+  display:block;          /* columna, así no te lo aprieta */
 }
 
-nav.top .nav-cats{
-  width:100%;
-}
 
-/* las categorías horizontales */
 nav.top #cats-bottom{
   display:flex;
-  flex-wrap:nowrap;              /* una fila */
-  gap:10px;
-  overflow-x:auto;               /* si no entran, se desliza */
+  flex-wrap:nowrap;
+  overflow-x:auto;
   -webkit-overflow-scrolling:touch;
-  padding:6px 14px 10px;         /* 14px solo para que NO se corte el primero */
+  gap:10px;
+  padding:6px 0 10px 0;   /* 👈 cero padding-left acá */
   scrollbar-width:none;
 }
 nav.top #cats-bottom::-webkit-scrollbar{
   display:none;
 }
 
-/* los botones */
+/* 💥 ESPACIADOR AL INICIO */
+nav.top #cats-bottom::before{
+  content: "";
+  flex: 0 0 400px;          /* 👈 probá 20, si querés más poné 28 */
+}
 nav.top #cats-bottom .cat-btn{
   white-space:nowrap;
   flex:0 0 auto;
-  color:#fff;
 }
 /* el logo va primero */
 nav.top .wrap .brand-mini{
@@ -963,7 +962,7 @@ const state = {
 };
 
 // ===== Refs DOM =====
-const catsEl = document.getElementById('cats-bottom');  // 👈 ESTE es el que existe ahora
+const catsEl = document.getElementById('cats-bottom') || document.getElementById('cats');
 const gridEl = document.getElementById('grid');
 const badgeEl = document.getElementById('badge');
 const drawer = document.getElementById('drawer');
@@ -1002,22 +1001,22 @@ function loadCart(){
 
 // ===== Render =====
 function renderCats(){
-  if (!catsEl) return; // por si alguna vista no lo tiene
+  if (!catsEl) return;
 
   catsEl.innerHTML = MENU.map(c => `
     <button class="cat-btn pill-anim btn-anim ripple-wrap ${c.id===state.cat?'active':''}" data-cat="${c.id}">
       ${CAT_NAMES[I18N.get()][c.id]}
     </button>`).join('');
 
+  // 👇 ESTA línea es la que te estaba faltando
+  catsEl.scrollLeft = 0;   // 🔥 vuelve a mostrar "Entremeses" siempre
+
   catsEl.querySelectorAll('button').forEach(b=>{
     b.onclick = () => {
       state.cat = b.dataset.cat;
       renderCats();
       renderGrid();
-      // si querés que NO mueva el scroll, sacá esto:
-      // const topBarH = document.querySelector('.top')?.offsetHeight || 0;
-      // const y = catsEl.getBoundingClientRect().top + window.scrollY - (topBarH + 12);
-      // window.scrollTo({ top: y, behavior: 'smooth' });
+      // si no querés que se mueva la página, no pongas scroll vertical acá
     };
   });
 }
