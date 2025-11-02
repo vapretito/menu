@@ -103,14 +103,14 @@ header::after{
 }
 
     /* ===== Navbar ===== */
-    nav.top{
-  position:sticky;
-  top:0;
-  z-index:120;
-  background: rgba(11,12,15,.96);      /* fondo oscuro siempre */
+/* ===== Navbar ===== */
+nav.top {
+  position: sticky;
+  top: 0;               /* cuando el nav toque el 0, se queda ahí */
+  z-index: 120;
+  background: rgba(11,12,15,.96);
   backdrop-filter: blur(10px);
   border-bottom: 1px solid rgba(214,184,106,.25);
-  transition: background .25s ease, box-shadow .25s ease;
 }
 
 
@@ -480,21 +480,24 @@ html, body{
 }
 /* que el wrap del nav permita otra fila */
 nav.top .wrap{
-  max-width:1100px;
-  margin:auto;
-  padding:8px 0 6px;
-  display:block;          /* columna, así no te lo aprieta */
+  display: block;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 6px 0 4px;
+  overflow: visible;
 }
 
-
+nav.top .nav-cats{
+  width: 100%;
+}
 nav.top #cats-bottom{
-  display:flex;
-  flex-wrap:nowrap;
-  overflow-x:auto;
-  -webkit-overflow-scrolling:touch;
-  gap:10px;
-  padding:6px 0 10px 0;   /* 👈 cero padding-left acá */
-  scrollbar-width:none;
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 10px;
+  overflow-x: auto;                 /* si no entran, scrollea */
+  -webkit-overflow-scrolling: touch;
+  padding: 6px 14px 10px;
+  scrollbar-width: none;
 }
 nav.top #cats-bottom::-webkit-scrollbar{
   display:none;
@@ -561,10 +564,9 @@ nav.top .wrap #cats .cat-btn{
 
     <!-- 👇 NUEVO: contenedor para las categorías en el navbar -->
     <div class="nav-cats">
-      <!-- <div class="brand-mini">
+       <div class="brand-mini">
         <img class="nav-logo" src="img/maestro-lee-logo.png" alt="Maestro Lee" />
-        <div id="brandText"><strong>Menu</strong></div>
-      </div> -->
+      </div>
       <div id="cats-bottom" class="cats"></div>
     </div>
   </div>
@@ -929,7 +931,7 @@ const state = {
 };
 
 // ===== Refs DOM =====
-const catsEl = document.getElementById('cats-bottom') || document.getElementById('cats');
+const catsEl = document.getElementById('cats-bottom');
 const gridEl = document.getElementById('grid');
 const badgeEl = document.getElementById('badge');
 const drawer = document.getElementById('drawer');
@@ -1157,12 +1159,7 @@ updateCartUI();
 });
 
     /* Sombra en navbar al scrollear */
-    (function(){
-      const topBar = document.querySelector('.top');
-      if(!topBar) return;
-      const onScroll = () => topBar.classList.toggle('scrolled', window.scrollY > 6);
-      onScroll(); window.addEventListener('scroll', onScroll, {passive:true});
-    })();
+    
     
  // Scroll reveal reutilizable para contenido dinámico
 (function () {
@@ -1217,6 +1214,17 @@ updateCartUI();
   document.getElementById('btnEN').classList.toggle('active', lang === 'en');
 }
 
+    </script>
+    <script>
+      const nav = document.querySelector('nav.top');
+      window.addEventListener('scroll', () => {
+        const offsetTop = nav.offsetTop; // dónde empieza el nav
+        if (window.scrollY >= offsetTop) {
+          nav.classList.add('scrolled');
+        } else {
+          nav.classList.remove('scrolled');
+        }
+      });
     </script>
     
 </body>
