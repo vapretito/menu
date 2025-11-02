@@ -480,10 +480,12 @@ html, body{
 }
 /* que el wrap del nav permita otra fila */
 nav.top .wrap{
-  display: flex;
-  flex-wrap: wrap;     /* 👈 ESTA es la clave */
-  gap: 10px 14px;
+  max-width:1100px;
+  margin:auto;
+  padding:12px 0 4px;    /* 👈 quito el padding-left que te corría el primer botón */
+  display:block;         /* 👈 en mobile lo queremos en columna */
 }
+
 
 /* el logo va primero */
 nav.top .wrap .brand-mini{
@@ -938,7 +940,7 @@ const state = {
 };
 
 // ===== Refs DOM =====
-const catsEl = document.getElementById('cats');
+const catsEl = document.getElementById('cats-bottom');  // 👈 ESTE es el que existe ahora
 const gridEl = document.getElementById('grid');
 const badgeEl = document.getElementById('badge');
 const drawer = document.getElementById('drawer');
@@ -977,6 +979,8 @@ function loadCart(){
 
 // ===== Render =====
 function renderCats(){
+  if (!catsEl) return; // por si alguna vista no lo tiene
+
   catsEl.innerHTML = MENU.map(c => `
     <button class="cat-btn pill-anim btn-anim ripple-wrap ${c.id===state.cat?'active':''}" data-cat="${c.id}">
       ${CAT_NAMES[I18N.get()][c.id]}
@@ -987,11 +991,10 @@ function renderCats(){
       state.cat = b.dataset.cat;
       renderCats();
       renderGrid();
-
-      // 👇 scroll a las categorías con offset por el navbar
-      const topBarH = document.querySelector('.top')?.offsetHeight || 0;
-      const y = catsEl.getBoundingClientRect().top + window.scrollY - (topBarH + 12);
-      window.scrollTo({ top: y, behavior: 'smooth' });
+      // si querés que NO mueva el scroll, sacá esto:
+      // const topBarH = document.querySelector('.top')?.offsetHeight || 0;
+      // const y = catsEl.getBoundingClientRect().top + window.scrollY - (topBarH + 12);
+      // window.scrollTo({ top: y, behavior: 'smooth' });
     };
   });
 }
