@@ -486,7 +486,30 @@ nav.top .wrap{
   display:block;         /* 👈 en mobile lo queremos en columna */
 }
 
+nav.top .nav-cats{
+  width:50%;
+}
 
+/* las categorías horizontales */
+nav.top #cats-bottom{
+  display:flex;
+  flex-wrap:nowrap;              /* una fila */
+  gap:10px;
+  overflow-x:auto;               /* si no entran, se desliza */
+  -webkit-overflow-scrolling:touch;
+  padding:6px 14px 10px;         /* 14px solo para que NO se corte el primero */
+  scrollbar-width:none;
+}
+nav.top #cats-bottom::-webkit-scrollbar{
+  display:none;
+}
+
+/* los botones */
+nav.top #cats-bottom .cat-btn{
+  white-space:nowrap;
+  flex:0 0 auto;
+  color:#fff;
+}
 /* el logo va primero */
 nav.top .wrap .brand-mini{
   order: 1;
