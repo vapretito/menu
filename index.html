@@ -11,12 +11,12 @@
   <link rel="icon" href="img/maestro-lee-logo.png" type="image/png" />
   <style>
     :root{
-  --paper:#bd868641;            /* papel de arroz claro */
+  --paper:#000000;            /* papel de arroz claro */
   --ink:#1a1b1e;              /* tinta/charcoal */
-  --brand:#2b2c30;            /* dejamos un “brand” oscuro */
+  --brand:#b10606;            /* dejamos un “brand” oscuro */
   --brand-dark:#17181b;
   --gold:#d6b86a;             /* dorado más suave */
-  --text:#222;
+  --text:#000000;
   --muted:#6b7280;
   --border:#e9dfb2;
   --shadow:0 10px 30px rgba(0,0,0,.15);
@@ -108,7 +108,7 @@ header::after{
 nav.top {
   position: relative;            /* ya no sticky */
   z-index: 120;
-  background: rgba(11,12,15,.96);
+  background: rgba(39, 5, 11, 0.96);
   backdrop-filter: blur(10px);
   border-bottom: 1px solid rgba(214,184,106,.25);
 }
@@ -706,7 +706,7 @@ nav.top .wrap #cats .cat-btn{
 </nav>
 
 <main>
-  <h2 class="section-title">Elige tu categoría</h2>
+  <h2 class="section-title" style="color: #ffffff; ">Elige tu categoría</h2>
   <div id="cats" class="cats"></div>
   <!-- 🔎 Toolbar de búsqueda / filtros / orden -->
 <div id="toolbar" class="toolbar">
