@@ -588,7 +588,56 @@ nav.top .wrap #cats .cat-btn{
 /* el nav NO debe recortar el contenido */
 
 
+/* ===== Toolbar filtros ===== */
+.toolbar{
+  margin: 10px 0 18px;
+  padding: 12px;
+  background: rgba(13,14,18,.92);
+  border: 2px solid rgba(214,184,106,.35);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  color: #fff;
+}
+.toolbar .row1{ display:flex; gap:10px; }
+.toolbar .row2{
+  margin-top: 10px;
+  display:flex; flex-wrap:wrap; gap:10px; align-items:center;
+}
 
+.toolbar input[type="search"],
+.toolbar input[type="number"],
+.toolbar select{
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid rgba(214,184,106,.35);
+  background: #0b0c10;
+  color: #fff;
+  outline: none;
+}
+.toolbar .fi{ display:flex; flex-direction:column; gap:6px; min-width: 140px; }
+.toolbar .fi span{ font-size:.85rem; opacity:.85 }
+
+.toolbar .chk{
+  display:flex; align-items:center; gap:8px; padding:8px 12px;
+  border:1px dashed rgba(214,184,106,.25); border-radius:10px;
+  background: rgba(246,214,138,.06);
+}
+.toolbar .chk input{ transform: scale(1.1); }
+
+@media (min-width: 680px){
+  .toolbar .row1 input[type="search"]{ font-size: 1rem; }
+  .toolbar .row1{ align-items:center }
+}
+
+/* texto solo para lectores de pantalla */
+.sr-only{
+  position:absolute; width:1px; height:1px; padding:0; margin:-1px;
+  overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0;
+}
+
+/* compáctalo un toque */
+#sort{ width:88px; text-align:center; font-weight:600; letter-spacing:.2px; }
 
   </style>
   
@@ -625,6 +674,34 @@ nav.top .wrap #cats .cat-btn{
 <main>
   <h2 class="section-title">Elige tu categoría</h2>
   <div id="cats" class="cats"></div>
+  <!-- 🔎 Toolbar de búsqueda / filtros / orden -->
+<div id="toolbar" class="toolbar">
+  <div class="row1">
+    <input id="q" type="search" placeholder="Buscar por nombre o descripción…" aria-label="Buscar">
+  </div>
+
+ 
+
+  <label class="fi">
+    <span class="sr-only">Sort</span>
+    <select id="sort" aria-label="Sort">
+      <!-- <option value="relevance"  title="Relevancia">★</option> -->
+      <option value="price_asc"  title="Price ↑">$↑</option>
+      <option value="price_desc" title="Price ↓">$↓</option>
+      <!-- Si querés por nombre:
+      <option value="name_asc"  title="A→Z">A→Z</option>
+      <option value="name_desc" title="Z→A">Z→A</option>
+      -->
+    </select>
+  </label>
+
+    <label class="chk">
+      <input id="searchAll" type="checkbox">
+      <span>All category</span>
+    </label>
+  </div>
+</div>
+
   <div id="grid" class="grid" aria-live="polite"></div>
 </main>
 
@@ -1051,51 +1128,169 @@ function resetCatsScroll(){
   window.addEventListener('resize', resetCatsScroll);
   // y por si tu renderCats tarda un poquito
   setTimeout(resetCatsScroll, 200);
-function renderGrid(){
+  function renderGrid(){
   const gridEl = document.getElementById('grid');
-  const cat = MENU.find(c=>c.id===state.cat) || { id:state.cat, items:[] };
+  if (!gridEl) return;
 
-  if (!cat.items.length) {
+  // ===== Estado defensivo =====
+  const lang = (typeof I18N !== 'undefined' && I18N.get) ? I18N.get() : 'es';
+  window.state = window.state || {};
+  state.cat = state.cat || (Array.isArray(MENU) && MENU[0] ? MENU[0].id : null);
+  state.filters = state.filters || { q:'', pmin:null, pmax:null, sort:'relevance', allCats:false };
+
+  // ===== Base de ítems (todas o categoría actual) =====
+  const baseItems = state.filters.allCats
+    ? MENU.flatMap(c => (c.items||[]).map(it => ({...it, __cat:c.id})))
+    : ((MENU.find(c => c.id===state.cat)?.items || []).map(it => ({...it, __cat:state.cat})));
+
+  // ===== Filtros (si no tenés toolbar, esto no filtra nada) =====
+  const q    = (state.filters.q || '').toString().trim().toLowerCase();
+  const pmin = state.filters.pmin;
+  const pmax = state.filters.pmax;
+
+  const norm = s => (s||'').toString().toLowerCase()
+    .normalize('NFD').replace(/\p{Diacritic}/gu,''); // saca acentos
+
+  let items = baseItems.filter(it => {
+    if (q){
+      const name = norm(I18N.name(it));
+      const desc = norm(I18N.desc(it));
+      if (!name.includes(norm(q)) && !desc.includes(norm(q))) return false;
+    }
+    if (pmin != null && it.price < pmin) return false;
+    if (pmax != null && it.price > pmax) return false;
+    return true;
+  });
+
+  // ===== Orden =====
+  const relevanceScore = (query, item) => {
+    if (!query) return 1;
+    const name = norm(I18N.name(item));
+    const desc = norm(I18N.desc(item));
+    const nq = norm(query);
+    let score = 0;
+    if (name === nq)        score += 5;
+    if (name.startsWith(nq))score += 4;
+    if (name.includes(nq))  score += 3;
+    if (desc.includes(nq))  score += 1;
+    return score;
+  };
+
+  switch(state.filters.sort){
+    case 'price_asc':  items.sort((a,b)=> a.price - b.price); break;
+    case 'price_desc': items.sort((a,b)=> b.price - a.price); break;
+    case 'name_asc':   items.sort((a,b)=> I18N.name(a).localeCompare(I18N.name(b))); break;
+    case 'name_desc':  items.sort((a,b)=> I18N.name(b).localeCompare(I18N.name(a))); break;
+    default:           items.sort((a,b)=> relevanceScore(q,b) - relevanceScore(q,a)); // relevance
+  }
+
+  // ===== Render =====
+  if (!items.length) {
+    const catLabel = state.filters.allCats
+      ? (lang==='es' ? 'Todas las categorías' : 'All categories')
+      : ((typeof CAT_NAMES!=='undefined' && CAT_NAMES[lang]) ? (CAT_NAMES[lang][state.cat] || '') : '');
     gridEl.innerHTML = `
       <div class="card reveal" style="padding:18px; text-align:center">
-        <h3 style="margin:0 0 8px">${CAT_NAMES[I18N.get()][cat.id] || ''}</h3>
-        <p style="color:var(--muted)">No hay productos en esta categoría.</p>
+        <h3 style="margin:0 0 8px">${catLabel}</h3>
+        <p style="color:var(--muted)">${lang==='es' ? 'No hay resultados con los filtros actuales.' : 'No results with current filters.'}</p>
       </div>`;
-    attachReveal(gridEl);
+    if (typeof attachReveal==='function') attachReveal(gridEl);
     return;
   }
 
-  gridEl.innerHTML = cat.items.map(p => `
-    <article class="card card-anim reveal">
-      <img src="${p.img}" alt="${I18N.name(p)}">
-      <div class="info">
-        <h3>${I18N.name(p)}</h3>
-        <p class="muted">${CAT_NAMES[I18N.get()][cat.id]}</p>
-        <div class="row">
-          <div class="price">${I18N.money(p.price)}</div>
-          <button class="add btn-anim btn-glow ripple-wrap" data-id="${p.id}">
-            ${I18N.get()==='es' ? 'Agregar' : 'Add'}
-          </button>
+  gridEl.innerHTML = items.map(p => {
+    const catName = (typeof CAT_NAMES!=='undefined' && CAT_NAMES[lang]) ? (CAT_NAMES[lang][p.__cat] || '') : '';
+    return `
+      <article class="card card-anim reveal">
+        <img src="${p.img}" alt="${I18N.name(p)}">
+        <div class="info">
+          <h3>${I18N.name(p)}</h3>
+          <p class="muted">${catName}</p>
+          <div class="row">
+            <div class="price">${I18N.money(p.price)}</div>
+            <button class="add btn-anim btn-glow ripple-wrap" data-id="${p.id}">
+              ${lang==='es' ? 'Agregar' : 'Add'}
+            </button>
+          </div>
+          <p style="margin-top:8px; color:var(--muted)">${I18N.desc(p)}</p>
         </div>
-        <p style="margin-top:8px; color:var(--muted)">${I18N.desc(p)}</p>
-      </div>
-    </article>
-  `).join('');
+      </article>
+    `;
+  }).join('');
 
-  // listeners "Add"
+  // listeners "Agregar"
   gridEl.querySelectorAll('button.add').forEach(b=>{
     b.onclick = () => {
-      const it = cat.items.find(x=>x.id===b.dataset.id);
+      const it = items.find(x=>x.id===b.dataset.id);
+      if (!it) return;
       addToCart(it);
-      const txt=b.textContent; b.disabled=true; b.textContent= I18N.get()==='es'?'✔ Agregado':'✔ Added';
+      const txt=b.textContent; b.disabled=true; b.textContent= (lang==='es'?'✔ Agregado':'✔ Added');
       setTimeout(()=>{ b.disabled=false; b.textContent=txt; }, 900);
     };
   });
 
-  attachReveal(gridEl);  // observa las nuevas cards .reveal
+  if (typeof attachReveal==='function') attachReveal(gridEl);
+}
+function debounce(fn, ms=220){
+  let t; 
+  return (...args)=>{ clearTimeout(t); t=setTimeout(()=>fn(...args), ms); };
+}
+// arranca la UI
+if (typeof renderCats === 'function') renderCats();
+renderGrid();
+
+/* ===== Refs toolbar ===== */
+const qEl     = document.getElementById('q');
+const pminEl  = document.getElementById('pmin');
+const pmaxEl  = document.getElementById('pmax');
+const sortEl  = document.getElementById('sort');
+const allEl   = document.getElementById('searchAll');
+
+/* ===== Listeners ===== */
+qEl?.addEventListener('input', debounce(()=>{
+  state.filters.q = qEl.value.trim();
+  renderGrid();
+}));
+
+pminEl?.addEventListener('input', debounce(()=>{
+  const v = pminEl.value === '' ? null : Number(pminEl.value);
+  state.filters.pmin = (v!=null && !Number.isNaN(v)) ? v : null;
+  renderGrid();
+}));
+
+pmaxEl?.addEventListener('input', debounce(()=>{
+  const v = pmaxEl.value === '' ? null : Number(pmaxEl.value);
+  state.filters.pmax = (v!=null && !Number.isNaN(v)) ? v : null;
+  renderGrid();
+}));
+
+sortEl?.addEventListener('change', ()=>{
+  state.filters.sort = sortEl.value;
+  renderGrid();
+});
+
+allEl?.addEventListener('change', ()=>{
+  state.filters.allCats = !!allEl.checked;
+  renderGrid();
+});
+
+/* reset al cambiar de categoría (mantengo query pero apago "todas") */
+function onCategoryChanged(){
+  state.filters.allCats = false;
+  allEl && (allEl.checked = false);
+  renderGrid();
 }
 
-
+/* Enganchar al click de las categorías del nav: envolver renderCats para avisar */
+const _renderCats = renderCats;
+renderCats = function(){
+  _renderCats();
+  // reenganchar los botones para llamar onCategoryChanged
+  const catsEl = document.getElementById('cats-bottom');
+  catsEl?.querySelectorAll('button[data-cat]').forEach(b=>{
+    b.addEventListener('click', onCategoryChanged, { once:false });
+  });
+};
 // ===== Carrito =====
 function addToCart(item){
   const had = state.cart.get(item.id);
@@ -1279,7 +1474,75 @@ updateCartUI();
     }
   }, { passive: true });
 </script>
-
+<script>
+  /* ====== Estado de filtros ====== */
+  state.filters = {
+    q: '',
+    pmin: null,
+    pmax: null,
+    sort: 'relevance',
+    allCats: false
+  };
+  
+  /* ====== Helpers ====== */
+  function allItems(){
+    return MENU.flatMap(c => c.items.map(it => ({...it, __cat:c.id})));
+  }
+  function itemsInCurrentCat(){
+    const cat = MENU.find(c => c.id === state.cat);
+    return cat ? cat.items.map(it => ({...it, __cat:cat.id})) : [];
+  }
+  function norm(s){ return (s||'').toString().toLowerCase().normalize('NFD').replace(/\p{Diacritic}/gu,''); }
+  
+  /* scoring simple para "relevancia" (match en nombre/desc) */
+  function relevanceScore(q, item){
+    if(!q) return 1;  // si no hay query, todos empatan
+    const name = norm(I18N.name(item));
+    const desc = norm(I18N.desc(item));
+    const nq = norm(q);
+    let score = 0;
+    if(name === nq) score += 5;
+    if(name.startsWith(nq)) score += 4;
+    if(name.includes(nq)) score += 3;
+    if(desc.includes(nq)) score += 1;
+    return score;
+  }
+  
+  /* aplica filtros + ordenamiento */
+  function filterAndSort(items){
+    const { q, pmin, pmax, sort } = state.filters;
+    const nq = norm(q);
+  
+    let list = items.filter(it => {
+      // texto
+      if(nq){
+        const match = norm(I18N.name(it)).includes(nq) || norm(I18N.desc(it)).includes(nq);
+        if(!match) return false;
+      }
+      // precios
+      if(pmin != null && it.price < pmin) return false;
+      if(pmax != null && it.price > pmax) return false;
+      return true;
+    });
+  
+    switch(sort){
+      case 'price_asc':  list.sort((a,b)=> a.price - b.price); break;
+      case 'price_desc': list.sort((a,b)=> b.price - a.price); break;
+      case 'name_asc':   list.sort((a,b)=> I18N.name(a).localeCompare(I18N.name(b))); break;
+      case 'name_desc':  list.sort((a,b)=> I18N.name(b).localeCompare(I18N.name(a))); break;
+      default: { // relevance
+        list.sort((a,b)=> relevanceScore(q,b) - relevanceScore(q,a));
+      }
+    }
+    return list;
+  }
+  
+  /* debounce para inputs */
+  function debounce(fn, ms=220){
+    let t; return (...args)=>{ clearTimeout(t); t=setTimeout(()=>fn(...args), ms); };
+  }
+  </script>
+  
     
 </body>
 </html>
