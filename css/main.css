@@ -30,7 +30,7 @@ html,body{
     margin:0;
     font-family:"Noto Serif SC","Microsoft YaHei","PingFang SC",serif;
     background:
-      radial-gradient(circle at top, #7a1619 0, rgb(12, 2, 2) 45%, #020005 100%);
+      radial-gradient(circle at top, #7a1619 0, rgb(3, 1, 1) 45%, #020005 100%);
     color:var(--text);
     overflow-x:hidden;
   }
@@ -175,7 +175,7 @@ a:visited{
 nav.top{
   position:relative;
   z-index:120;
-  background:rgba(39,5,11,.96);
+  background:rgb(43, 0, 3);
   backdrop-filter:blur(10px);
   border-bottom:1px solid rgba(214,184,106,.25);
 }
@@ -939,7 +939,7 @@ footer{
 
 .lang-fab{
     position:fixed;
-    top:14px;
+    top:35px;
     right:14px;
     left:auto;
     bottom:auto;
