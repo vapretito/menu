@@ -30,7 +30,7 @@ html,body{
     margin:0;
     font-family:"Noto Serif SC","Microsoft YaHei","PingFang SC",serif;
     background:
-      radial-gradient(circle at top, #eb1b22dc 0, rgb(2, 1, 1) 30%, #020005 100%);
+      radial-gradient(circle at top, #B22B2F 0, rgb(2, 1, 1) 30%, #020005 100%);
     color:var(--text);
     overflow-x:hidden;
   }
