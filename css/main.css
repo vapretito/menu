@@ -984,7 +984,7 @@ footer{
   /* En mobile, un poquito más abajo para no chocar tanto con el nav */
   @media (max-width:820px){
     .lang-fab{
-      top:70px;
+      top:10px;
       right:10px;
     }
   }
