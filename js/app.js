@@ -166,7 +166,7 @@ const I18N = (() => {
           name_en: "Wonton Soup",
           desc_es: "Caldo de pollo con wonton.",
           desc_en: "Chicken broth with wontons.",
-          price: 3.9,
+          price: 5.90,
           img: "img/sopas.png",
         },
         {
@@ -175,7 +175,7 @@ const I18N = (() => {
           name_en: "Wonton Mee Soup",
           desc_es: "Caldo de pollo con wonton, cerdo y fideos.",
           desc_en: "Chicken broth with wontons, pork and noodles.",
-          price: 4.75,
+          price: 6.75,
           img: "img/sopas.png",
         },
       ],

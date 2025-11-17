@@ -47,8 +47,9 @@ a:visited{
   min-height:100vh;
   display:grid;
   place-items:center;
-  background:url("img/hero-maestro-lee.png") center/cover no-repeat;
+  background:url("../img/IMG_4060.png") center/cover no-repeat;
   border-bottom:4px solid var(--gold);
+
 }
 
 @supports (height:100dvh){
