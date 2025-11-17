@@ -47,9 +47,9 @@ a:visited{
   min-height:100vh;
   display:grid;
   place-items:center;
-  background:url("../img/IMG_4060.png") center/cover no-repeat;
+  background:url("../img/IMG_4060.png") center 42% / cover no-repeat;
   border-bottom:4px solid var(--gold);
-
+  animation: hero-pan-x 14s ease-in-out infinite;
 }
 
 @supports (height:100dvh){
@@ -57,6 +57,27 @@ a:visited{
     min-height:100dvh;
   }
 }
+
+/* 🔁 movimiento izquierda → derecha → izquierda */
+@keyframes hero-pan-x{
+  0%{
+    background-position: 40% 42%; /* un poquito a la izquierda */
+  }
+  50%{
+    background-position: 60% 42%; /* se desplaza hacia la derecha */
+  }
+  100%{
+    background-position: 40% 42%; /* vuelve al inicio */
+  }
+}
+
+/* accesibilidad */
+@media (prefers-reduced-motion: reduce){
+  .hero{
+    animation:none;
+  }
+}
+
 
 .hero .overlay{
   position:absolute;
