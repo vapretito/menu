@@ -1018,3 +1018,21 @@ footer{
   color:#0b0c0f;
   border-color:rgba(246,214,138,1);
 }
+/* 🖥️ Más ancho en escritorio grande */
+@media (min-width: 1200px){
+  main{
+    max-width: 1350px;   /* antes 1100px */
+    padding: 24px 24px 120px;
+  }
+
+  .grid{
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  }
+}
+
+/* Monitores muy grandes */
+@media (min-width: 1600px){
+  main{
+    max-width: 1450px;
+  }
+}
