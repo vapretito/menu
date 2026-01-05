@@ -503,7 +503,7 @@ const I18N = (() => {
           desc_es: "Combo individual.",
           desc_en: "Single combo.",
           price: 9.99,
-          img: "img/Arroz frito con vegetales + Pollo agridulce + Lumpia.JPEG",
+          img: "img/ArrozfritoconvegetalesPolloagridulceLumpia.JPEG",
         },
         {
           id: "combo-especial-res-lumpia",
