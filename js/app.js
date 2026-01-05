@@ -457,7 +457,7 @@ const I18N = (() => {
             "Noodles with pork and crunchy vegetables.",
           price: 9.99,
           img: "img/fideocerdo.JPEG",
-        },
+        }, 
         {
           id: "pasta-pollo",
           name_es: "Pasta con Pollo",
