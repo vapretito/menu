@@ -94,7 +94,7 @@ const I18N = (() => {
           desc_es: "Crujientes rollos fritos.",
           desc_en: "Crispy fried spring rolls.",
           price: 4.55,
-          img: "img/entremeses.png",
+          img: "img/lupia.JPEG",
         },
         {
           id: "chop-especial",
@@ -144,7 +144,7 @@ const I18N = (() => {
           desc_es: "Costillas en salsa agridulce.",
           desc_en: "Ribs in sweet & sour sauce.",
           price: 11.99,
-          img: "img/entremeses.png",
+          img: "img/costillas.jpeg",
         },
         {
           id: "dumpling-8",
@@ -153,7 +153,7 @@ const I18N = (() => {
           desc_es: "Rellenos al vapor.",
           desc_en: "Steamed stuffed dumplings.",
           price: 6.55,
-          img: "img/entremeses.png",
+          img: "img/Dumplings.jpeg",
         },
       ],
     },
@@ -192,7 +192,7 @@ const I18N = (() => {
           desc_en:
             "Rice with pork, chicken, shrimp, veggies, egg and bean sprouts.",
           price: 9.25,
-          img: "img/arroz.png",
+          img: "img/arrozespecial.JPEG",
         },
         {
           id: "arroz-cerdo",
@@ -201,7 +201,7 @@ const I18N = (() => {
           desc_es: "Cerdo, huevo, cebolla verde y brotes de soja.",
           desc_en: "Pork, egg, scallions and bean sprouts.",
           price: 8.99,
-          img: "img/arroz.png",
+          img: "img/arrozcerdo.jpeg",
         },
         {
           id: "arroz-pollo",
@@ -219,7 +219,7 @@ const I18N = (() => {
           desc_es: "Carne en cubos y vegetales mixtos.",
           desc_en: "Diced beef and mixed vegetables.",
           price: 12.99,
-          img: "img/arroz.png",
+          img: "img/arrozcarne.jpeg",
         },
         {
           id: "arroz-jamon",
@@ -252,7 +252,7 @@ const I18N = (() => {
           desc_es: "Pollo con salsa agridulce.",
           desc_en: "Chicken with sweet & sour sauce.",
           price: 11.25,
-          img: "img/pollo.png",
+          img: "img/polloagridulce.JPEG",
         },
         {
           id: "pollo-agridulce-pina",
@@ -279,7 +279,7 @@ const I18N = (() => {
           desc_es: "Pollo con vegetales mixtos.",
           desc_en: "Chicken with mixed vegetables.",
           price: 12.99,
-          img: "img/pollo.png",
+          img: "img/pollovegetales.JPEG",
         },
         {
           id: "pollo-brocoli",
@@ -288,7 +288,7 @@ const I18N = (() => {
           desc_es: "Pollo salteado con brócoli.",
           desc_en: "Stir-fried chicken with broccoli.",
           price: 12.99,
-          img: "img/pollo.png",
+          img: "img/pollobrocoli.JPEG",
         },
         {
           id: "pollo-champinones",
@@ -297,7 +297,7 @@ const I18N = (() => {
           desc_es: "Pollo con champiñones.",
           desc_en: "Chicken with mushrooms.",
           price: 12.99,
-          img: "img/pollo.png",
+          img: "img/pollochamp.JPEG",
         },
         {
           id: "pollo-ostras",
@@ -568,7 +568,7 @@ const I18N = (() => {
           desc_es: "Clásico postre casero.",
           desc_en: "Classic milk-soaked cake.",
           price: 7.0,
-          img: "img/postres.png",
+          img: "img/postres.JPEG",
         },
         {
           id: "quesillo",
