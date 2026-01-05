@@ -192,7 +192,7 @@ const I18N = (() => {
           desc_en:
             "Rice with pork, chicken, shrimp, veggies, egg and bean sprouts.",
           price: 9.25,
-          img: "img/arrozespecial.JPEG",
+          img: "img/arrozespecial1.JPEG",
         },
         {
           id: "arroz-cerdo",
