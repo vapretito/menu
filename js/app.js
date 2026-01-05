@@ -210,7 +210,7 @@ const I18N = (() => {
           desc_es: "Tiras de pollo, pimientos y cebolla verde.",
           desc_en: "Chicken strips, peppers and scallions.",
           price: 8.99,
-          img: "img/arroz.png",
+          img: "img/arrozpollo.JPEG",
         },
         {
           id: "arroz-carne",
@@ -837,6 +837,9 @@ const I18N = (() => {
       if (typeof window.attachReveal === "function") {
         window.attachReveal(gridEl);
       }
+      if (typeof window.attachImageZoom === "function") {
+        window.attachImageZoom(gridEl);
+      }
       return;
     }
   
@@ -1200,7 +1203,192 @@ const I18N = (() => {
       { passive: true }
     );
   })();
-  
+  // =======================
+// Zoom de imágenes (FLIP)
+// =======================
+(function () {
+  // CSS inyectado (para no tocar tu CSS externo)
+  const css = `
+    .img-zoom-overlay{
+      position:fixed; inset:0;
+      background: rgba(0,0,0,.62);
+      backdrop-filter: blur(4px);
+      display:flex; align-items:center; justify-content:center;
+      z-index: 9999;
+      opacity:0;
+    }
+    .img-zoom-overlay.is-in{ opacity:1; }
+    .img-zoom-stage{ position:relative; width: min(92vw, 980px); height: min(86vh, 720px); }
+    .img-zoom-stage img{
+      width:100%; height:100%;
+      object-fit: contain;
+      border-radius: 16px;
+      box-shadow: 0 25px 80px rgba(0,0,0,.45);
+      background: rgba(255,255,255,.04);
+    }
+    .img-zoom-close{
+      position:fixed; top:16px; right:16px;
+      z-index: 10000;
+      border:0;
+      border-radius: 999px;
+      padding:10px 12px;
+      cursor:pointer;
+      background: rgba(0,0,0,.45);
+      color: #fff;
+      font-size: 18px;
+      line-height: 1;
+      backdrop-filter: blur(6px);
+    }
+    .img-zoom-thumb{ cursor: zoom-in; }
+  `;
+  const style = document.createElement("style");
+  style.textContent = css;
+  document.head.appendChild(style);
+
+  const prefersReduced =
+    window.matchMedia &&
+    window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  function openImageFromThumb(thumbImg) {
+    if (!thumbImg || !thumbImg.src) return;
+
+    // Rect original (thumb)
+    const r0 = thumbImg.getBoundingClientRect();
+
+    // Overlay + contenedor final
+    const overlay = document.createElement("div");
+    overlay.className = "img-zoom-overlay";
+    overlay.setAttribute("role", "dialog");
+    overlay.setAttribute("aria-modal", "true");
+
+    const closeBtn = document.createElement("button");
+    closeBtn.className = "img-zoom-close";
+    closeBtn.type = "button";
+    closeBtn.textContent = "✕";
+
+    const stage = document.createElement("div");
+    stage.className = "img-zoom-stage";
+
+    const bigImg = document.createElement("img");
+    bigImg.src = thumbImg.src;
+    bigImg.alt = thumbImg.alt || "Imagen del plato";
+    bigImg.decoding = "async";
+
+    stage.appendChild(bigImg);
+    overlay.appendChild(stage);
+    document.body.appendChild(overlay);
+    document.body.appendChild(closeBtn);
+
+    // Cerrar helpers
+    const cleanup = () => {
+      overlay.remove();
+      closeBtn.remove();
+      document.removeEventListener("keydown", onKey);
+    };
+
+    const closeWithAnim = () => {
+      if (prefersReduced) return cleanup();
+
+      // animación inversa: desde big -> thumb
+      const bigRect = bigImg.getBoundingClientRect();
+      const ghost = bigImg.cloneNode(true);
+      ghost.style.position = "fixed";
+      ghost.style.left = bigRect.left + "px";
+      ghost.style.top = bigRect.top + "px";
+      ghost.style.width = bigRect.width + "px";
+      ghost.style.height = bigRect.height + "px";
+      ghost.style.objectFit = "contain";
+      ghost.style.borderRadius = "16px";
+      ghost.style.zIndex = "10001";
+      document.body.appendChild(ghost);
+
+      overlay.classList.remove("is-in");
+      closeBtn.style.opacity = "0";
+
+      const dx = r0.left - bigRect.left;
+      const dy = r0.top - bigRect.top;
+      const sx = r0.width / bigRect.width;
+      const sy = r0.height / bigRect.height;
+
+      ghost.animate(
+        [
+          { transform: "translate(0,0) scale(1,1)" },
+          { transform: `translate(${dx}px, ${dy}px) scale(${sx}, ${sy})` },
+        ],
+        { duration: 260, easing: "cubic-bezier(.2,.8,.2,1)", fill: "forwards" }
+      ).onfinish = () => {
+        ghost.remove();
+        cleanup();
+      };
+    };
+
+    const onKey = (e) => {
+      if (e.key === "Escape") closeWithAnim();
+    };
+
+    overlay.addEventListener("click", (e) => {
+      // click fuera de la imagen cierra
+      if (e.target === overlay) closeWithAnim();
+    });
+    closeBtn.addEventListener("click", closeWithAnim);
+    document.addEventListener("keydown", onKey);
+
+    // Fade in overlay
+    requestAnimationFrame(() => overlay.classList.add("is-in"));
+
+    // Animación FLIP (thumb -> fullscreen)
+    if (prefersReduced) return;
+
+    // Creamos "ghost" desde el thumb
+    const ghost = thumbImg.cloneNode(true);
+    ghost.style.position = "fixed";
+    ghost.style.left = r0.left + "px";
+    ghost.style.top = r0.top + "px";
+    ghost.style.width = r0.width + "px";
+    ghost.style.height = r0.height + "px";
+    ghost.style.objectFit = getComputedStyle(thumbImg).objectFit || "cover";
+    ghost.style.borderRadius = getComputedStyle(thumbImg).borderRadius || "12px";
+    ghost.style.zIndex = "10001";
+    ghost.style.cursor = "zoom-out";
+    document.body.appendChild(ghost);
+
+    // ocultamos el big durante el viaje para que no "duplique"
+    bigImg.style.visibility = "hidden";
+
+    // Esperamos layout final y animamos hasta bigRect
+    requestAnimationFrame(() => {
+      const r1 = bigImg.getBoundingClientRect();
+
+      const dx = r1.left - r0.left;
+      const dy = r1.top - r0.top;
+      const sx = r1.width / r0.width;
+      const sy = r1.height / r0.height;
+
+      ghost.animate(
+        [
+          { transform: "translate(0,0) scale(1,1)" },
+          { transform: `translate(${dx}px, ${dy}px) scale(${sx}, ${sy})` },
+        ],
+        { duration: 320, easing: "cubic-bezier(.2,.8,.2,1)", fill: "forwards" }
+      ).onfinish = () => {
+        ghost.remove();
+        bigImg.style.visibility = "visible";
+      };
+    });
+  }
+
+  // Exponemos un helper global para llamarlo desde renderGrid()
+  window.attachImageZoom = function attachImageZoom(root = document) {
+    root.querySelectorAll("article.card img").forEach((img) => {
+      // Evitar duplicar listeners
+      if (img.dataset.zoomBound) return;
+      img.dataset.zoomBound = "1";
+      img.classList.add("img-zoom-thumb");
+      img.addEventListener("click", () => openImageFromThumb(img));
+    });
+  };
+})();
+
   // =======================
   // Init
   // =======================
