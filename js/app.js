@@ -834,12 +834,12 @@ const I18N = (() => {
             }
           </p>
         </div>`;
-      if (typeof window.attachReveal === "function") {
-        window.attachReveal(gridEl);
-      }
-      if (typeof window.attachImageZoom === "function") {
-        window.attachImageZoom(gridEl);
-      }
+        if (typeof window.attachReveal === "function") {
+          window.attachReveal(gridEl);
+        }
+        if (typeof window.attachImageZoom === "function") {
+          window.attachImageZoom(gridEl);
+        }
       return;
     }
   
@@ -888,9 +888,12 @@ const I18N = (() => {
         };
       });
   
-    if (typeof window.attachReveal === "function") {
-      window.attachReveal(gridEl);
-    }
+      if (typeof window.attachReveal === "function") {
+        window.attachReveal(gridEl);
+      }
+      if (typeof window.attachImageZoom === "function") {
+        window.attachImageZoom(gridEl);
+      }
   }
   
   // =======================
