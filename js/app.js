@@ -105,7 +105,7 @@ const I18N = (() => {
           desc_en:
             "Pork and ham with cabbage, carrot, celery and peppers.",
           price: 9.99,
-          img: "img/entremeses.png",
+          img: "img/chopsuey.JPEG",
         },
         {
           id: "chop-carne",
@@ -116,7 +116,7 @@ const I18N = (() => {
           desc_en:
             "Beef stir-fried with bean sprouts, celery, cabbage, carrot and peppers.",
           price: 10.99,
-          img: "img/entremeses.png",
+          img: "img/chopsuey.JPEG",
         },
         {
           id: "chop-camarones",
@@ -126,7 +126,7 @@ const I18N = (() => {
             "Camarones con verduras mixtas (repollo, pimientos y apio).",
           desc_en: "Shrimp with mixed vegetables (cabbage, peppers, celery).",
           price: 11.99,
-          img: "img/entremeses.png",
+          img: "img/chopsuey.JPEG",
         },
         {
           id: "chop-pollo",
@@ -135,7 +135,7 @@ const I18N = (() => {
           desc_es: "Pollo salteado con verduras crujientes.",
           desc_en: "Chicken stir-fried with crunchy vegetables.",
           price: 9.99,
-          img: "img/entremeses.png",
+          img: "img/chopsuey.JPEG",
         },
         {
           id: "costillas-agridulces-4",
@@ -167,7 +167,7 @@ const I18N = (() => {
           desc_es: "Caldo de pollo con wonton.",
           desc_en: "Chicken broth with wontons.",
           price: 5.90,
-          img: "img/sopas.png",
+          img: "img/sopas.JPEG",
         },
         {
           id: "sopa-wonton-mee",
@@ -176,7 +176,7 @@ const I18N = (() => {
           desc_es: "Caldo de pollo con wonton, cerdo y fideos.",
           desc_en: "Chicken broth with wontons, pork and noodles.",
           price: 6.75,
-          img: "img/sopas.png",
+          img: "img/sopas.JPEG",
         },
       ],
     },
@@ -238,7 +238,7 @@ const I18N = (() => {
           desc_es: "Vegetales mixtos y cebolla verde.",
           desc_en: "Mixed vegetables and scallions.",
           price: 6.99,
-          img: "img/arroz.png",
+          img: "img/arrozvegetales.JPG",
         },
       ],
     },
@@ -261,7 +261,7 @@ const I18N = (() => {
           desc_es: "Con piña en cubos y pimentón.",
           desc_en: "With pineapple chunks and bell pepper.",
           price: 11.99,
-          img: "img/pollo.png",
+          img: "img/pollopiña.JPEG",
         },
         {
           id: "pollo-agridulce-picante",
@@ -270,7 +270,7 @@ const I18N = (() => {
           desc_es: "Pollo con salsa agridulce picante.",
           desc_en: "Chicken in spicy sweet & sour sauce.",
           price: 11.25,
-          img: "img/pollo.png",
+          img: "img/polloagridulcepicante.JPEG",
         },
         {
           id: "pollo-vegetales",
@@ -279,7 +279,7 @@ const I18N = (() => {
           desc_es: "Pollo con vegetales mixtos.",
           desc_en: "Chicken with mixed vegetables.",
           price: 12.99,
-          img: "img/pollovegetales.JPEG",
+          img: "img/pollovegetales1.JPEG",
         },
         {
           id: "pollo-brocoli",
@@ -328,7 +328,7 @@ const I18N = (() => {
           desc_es: "Pollo en salsa de naranja.",
           desc_en: "Chicken in orange sauce.",
           price: 11.25,
-          img: "img/pollo.png",
+          img: "img/pollonaranja.JPEG",
         },
       ],
     },
@@ -344,7 +344,7 @@ const I18N = (() => {
           desc_en:
             "Beef with onion, peppers, carrot and broccoli.",
           price: 14.99,
-          img: "img/carne.png",
+          img: "img/carnevegetales.JPEG",
         },
         {
           id: "res-brocoli",
@@ -353,7 +353,7 @@ const I18N = (() => {
           desc_es: "Carne salteada con ajo y jengibre.",
           desc_en: "Beef stir-fried with garlic and ginger.",
           price: 14.99,
-          img: "img/carne.png",
+          img: "img/carnebrocoli.JPEG",
         },
         {
           id: "res-jengibre-cebollin",
@@ -385,7 +385,7 @@ const I18N = (() => {
             "Carne salteada con cebolla y champiñones.",
           desc_en: "Beef stir-fried with onion and mushrooms.",
           price: 14.99,
-          img: "img/carne.png",
+          img: "img/carnechamp.JPEG",
         },
         {
           id: "res-jojoticos",
@@ -395,7 +395,7 @@ const I18N = (() => {
             "Carne salteada con cebolla y jojoticos.",
           desc_en: "Beef stir-fried with onion and baby corn.",
           price: 15.44,
-          img: "img/carne.png",
+          img: "img/carnejojo.JPEG",
         },
       ],
     },
@@ -445,7 +445,7 @@ const I18N = (() => {
           desc_en:
             "Stir-fried noodles with beef and vegetables.",
           price: 11.99,
-          img: "img/pastas.png",
+          img: "img/fideoscarne.JPEG",
         },
         {
           id: "pasta-cerdo",
@@ -456,7 +456,7 @@ const I18N = (() => {
           desc_en:
             "Noodles with pork and crunchy vegetables.",
           price: 9.99,
-          img: "img/pastas.png",
+          img: "img/fideocerdo.JPEG",
         },
         {
           id: "pasta-pollo",
@@ -467,7 +467,7 @@ const I18N = (() => {
           desc_en:
             "Noodles with chicken and crunchy vegetables.",
           price: 9.99,
-          img: "img/pastas.png",
+          img: "img/pastapollo.JPEG",
         },
         {
           id: "pasta-vegetales",
@@ -476,7 +476,7 @@ const I18N = (() => {
           desc_es: "Fideos salteados con vegetales variados.",
           desc_en: "Stir-fried noodles with assorted vegetables.",
           price: 9.0,
-          img: "img/pastas.png",
+          img: "img/pastavegetales.JPEG",
         },
         {
           id: "pasta-especial",
@@ -503,7 +503,7 @@ const I18N = (() => {
           desc_es: "Combo individual.",
           desc_en: "Single combo.",
           price: 9.99,
-          img: "img/combos.png",
+          img: "img/Arroz frito con vegetales + Pollo agridulce + Lumpia.JPEG",
         },
         {
           id: "combo-especial-res-lumpia",
@@ -514,7 +514,7 @@ const I18N = (() => {
           desc_es: "Combo individual.",
           desc_en: "Single combo.",
           price: 11.99,
-          img: "img/combos.png",
+          img: "img/Arroz frito especial + Carne con brócoli + Lumpia.JPEG",
         },
         {
           id: "combo-especial-cerdo-o-pollo",
@@ -525,7 +525,7 @@ const I18N = (() => {
           desc_es: "Elegí una proteína.",
           desc_en: "Choose one protein.",
           price: 10.99,
-          img: "img/combos.png",
+          img: "img/combo.JPEG",
         },
         {
           id: "combo-arroz-costillas-chopsuey",
@@ -534,7 +534,7 @@ const I18N = (() => {
           desc_es: "Combo individual.",
           desc_en: "Single combo.",
           price: 9.99,
-          img: "img/combos.png",
+          img: "img/arrozfritocostillaschopsuey.JPEG",
         },
         {
           id: "combo-fideos-carnes-lumpia-costilla",
@@ -545,7 +545,7 @@ const I18N = (() => {
           desc_es: "Elegí tu proteína.",
           desc_en: "Choose your protein.",
           price: 11.99,
-          img: "img/combos.png",
+          img: "img/fideoslumpiacostilla.JPEG",
         },
         {
           id: "pan",
@@ -577,7 +577,7 @@ const I18N = (() => {
           desc_es: "Flan venezolano.",
           desc_en: "Venezuelan flan.",
           price: 5.0,
-          img: "img/postres.png",
+          img: "img/flan.jpg",
         },
       ],
     },
