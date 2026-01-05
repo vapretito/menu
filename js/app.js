@@ -514,7 +514,7 @@ const I18N = (() => {
           desc_es: "Combo individual.",
           desc_en: "Single combo.",
           price: 11.99,
-          img: "img/Arroz frito especial + Carne con brócoli + Lumpia.JPEG",
+          img: "img/ArrozfritoespecialCarneconbrócoliLumpia.JPEG",
         },
         {
           id: "combo-especial-cerdo-o-pollo",
