@@ -201,7 +201,7 @@ const I18N = (() => {
           desc_es: "Cerdo, huevo, cebolla verde y brotes de soja.",
           desc_en: "Pork, egg, scallions and bean sprouts.",
           price: 8.99,
-          img: "img/arrozcerdo.jpeg",
+          img: "img/arrozcerdo1.JPEG",
         },
         {
           id: "arroz-pollo",
@@ -219,7 +219,7 @@ const I18N = (() => {
           desc_es: "Carne en cubos y vegetales mixtos.",
           desc_en: "Diced beef and mixed vegetables.",
           price: 12.99,
-          img: "img/arrozcarne.jpeg",
+          img: "img/arrozcarne.JPEG",
         },
         {
           id: "arroz-jamon",
