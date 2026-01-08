@@ -64,7 +64,6 @@ const I18N = (() => {
       arroz: "Arroz",
       pollo: "Pollo",
       res: "Carne de Res",
-      cerdo: "Cerdo",
       pastas: "Pastas",
       combos: "Combos",
       postre: "Postre",
@@ -75,7 +74,6 @@ const I18N = (() => {
       arroz: "Rice",
       pollo: "Chicken",
       res: "Beef",
-      cerdo: "Pork",
       pastas: "Noodles",
       combos: "Combos",
       postre: "Dessert",
@@ -399,40 +397,7 @@ const I18N = (() => {
         },
       ],
     },
-    {
-      id: "cerdo",
-      items: [
-        {
-          id: "cerdo-agridulce",
-          name_es: "Cerdo Agridulce",
-          name_en: "Sweet & Sour Pork",
-          desc_es: "Cerdo con salsa agridulce.",
-          desc_en: "Pork in sweet & sour sauce.",
-          price: 11.25,
-          img: "img/cerdo.png",
-        },
-        {
-          id: "cerdo-vegetales",
-          name_es: "Cerdo con Vegetales",
-          name_en: "Pork with Vegetables",
-          desc_es: "Cerdo con vegetales mixtos.",
-          desc_en: "Pork with mixed vegetables.",
-          price: 11.99,
-          img: "img/cerdo.png",
-        },
-        {
-          id: "cerdo-jengibre-cebollin",
-          name_es: "Cerdo Jengibre y Cebollín",
-          name_en: "Pork with Ginger & Chives",
-          desc_es:
-            "Cerdo salteado con ajo, jengibre y cebollino.",
-          desc_en:
-            "Pork stir-fried with garlic, ginger and chives.",
-          price: 11.99,
-          img: "img/cerdo.png",
-        },
-      ],
-    },
+    
     {
       id: "pastas",
       items: [
